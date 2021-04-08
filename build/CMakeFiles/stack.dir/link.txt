@@ -1,2 +1,0 @@
-/home/linuxbrew/.linuxbrew/bin/ar qc libstack.a  CMakeFiles/stack.dir/src/stack/stack.cpp.o
-/home/linuxbrew/.linuxbrew/bin/ranlib libstack.a

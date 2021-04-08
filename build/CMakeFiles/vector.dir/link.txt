@@ -1,2 +1,0 @@
-/home/linuxbrew/.linuxbrew/bin/ar qc libvector.a  CMakeFiles/vector.dir/src/vector/vector.cpp.o
-/home/linuxbrew/.linuxbrew/bin/ranlib libvector.a
