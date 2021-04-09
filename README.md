@@ -13,6 +13,13 @@ int main(int argc, char** argv)
 	return 0;
 }
 ```
+## Компиляция кода на WSL
+Сначала надо установить ПО
+```bash
+$ sudo apt-get update
+$ sudo apt-get install make
+$ sudo apt-get install cmake
+```
 
 Для начального запуска проекта надо выполнить команды из корневой папки:
 ```bash
