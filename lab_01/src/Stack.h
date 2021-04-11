@@ -1,0 +1,190 @@
+#ifndef CLASS_STACK_H
+#define CLASS_STACK_H
+
+#include <ostream>
+
+template <typename T>
+class Stack
+{
+private:
+	T* storage;	  // Pointer to array with stack data
+	size_t count; // Count of elements in the stack
+
+private:
+	void delete_storage();                          // Ñlear memory allocated for the stack
+	void replace_storage(T*& new_storage);		    // Replace stack storage 
+	void throw_if_empty(const char* message) const; // For exceptions when working with empty stack
+
+public:
+	Stack();  // Constructor
+	~Stack(); // Destructor
+
+	void push(T value); // Add element
+	void pop();         // Delete element
+
+	T& top(); // Get top element
+
+	size_t size() const; // Get stack size
+	bool empty() const;	 // Stack is empty?
+	
+	// Lexicographic comparison operators begin
+
+	bool operator==(const Stack<T>& stack) const;
+	bool operator!=(const Stack<T>& stack) const;
+
+	bool operator<(const Stack<T>& stack) const;
+	bool operator>(const Stack<T>& stack) const;
+
+	bool operator<=(const Stack<T>& stack) const;
+	bool operator>=(const Stack<T>& stack) const;
+
+	// Lexicographic comparison operators end
+
+	// Operator for output all stack elements
+	friend std::ostream& operator<<(std::ostream& out, const Stack<T>& stack)
+	{
+		stack.throw_if_empty("You are trying to display empty stack!");
+
+		for (int i = stack.size() - 1; i >= 0; i--)
+			out << stack.storage[i] << "\n";
+
+		return out;
+	}
+
+	// Noncopyable
+	Stack(const Stack& stack) = delete;
+	Stack& operator=(const Stack& stack) = delete;
+};
+
+template <typename T>
+Stack<T>::Stack()
+{
+	storage = nullptr;
+	count = 0;
+}
+
+template <typename T>
+Stack<T>::~Stack()
+{
+	delete_storage();
+	count = 0;
+}
+
+template <typename T>
+void Stack<T>::push(T value)
+{
+	T* new_storage = new T[count + 1];
+
+	for (size_t i = 0; i < count; i++)
+		new_storage[i] = storage[i];
+
+	new_storage[count++] = value;
+	replace_storage(new_storage);
+}
+
+template <typename T>
+void Stack<T>::pop()
+{
+	throw_if_empty("You are trying to extract item from empty stack!");
+
+	T* new_storage = new T[--count];
+
+	for (size_t i = 0; i < count; i++)
+		new_storage[i] = storage[i];
+
+	replace_storage(new_storage);
+}
+
+template <typename T>
+T& Stack<T>::top()
+{
+	throw_if_empty("You are trying to access top of empty stack!");
+	return storage[count - 1];
+}
+
+template <typename T>
+size_t Stack<T>::size() const
+{
+	return count;
+}
+
+template <typename T>
+bool Stack<T>::empty() const
+{
+	return count == 0;
+}
+
+template <typename T>
+bool Stack<T>::operator==(const Stack<T>& stack) const
+{
+	if (count != stack.count)
+		return false;
+
+	for (size_t i = 0; i < count; i++)
+		if (storage[i] != stack.storage[i])
+			return false;
+
+	return true;
+}
+
+template <typename T>
+bool Stack<T>::operator!=(const Stack<T>& stack) const
+{
+	return !(*this == stack);
+}
+
+template <typename T>
+bool Stack<T>::operator<(const Stack<T>& stack) const
+{
+	size_t min_count = count < stack.count ? count : stack.count;
+
+	for (size_t i = 0; i < min_count; i++)
+		if (storage[i] >= stack.storage[i])
+			return false;
+
+	return true;
+}
+
+template <typename T>
+bool Stack<T>::operator>(const Stack<T>& stack) const
+{
+	return !(*this < stack) && *this != stack;
+}
+
+template <typename T>
+bool Stack<T>::operator<=(const Stack<T>& stack) const
+{
+	return *this < stack || *this == stack;
+}
+
+template <typename T>
+bool Stack<T>::operator>=(const Stack<T>& stack) const
+{
+	return *this > stack || *this == stack;
+}
+
+template <typename T>
+void Stack<T>::delete_storage()
+{
+	if (storage == nullptr)
+		return;
+
+	delete[] storage;
+	storage = nullptr;
+}
+
+template <typename T>
+void Stack<T>::replace_storage(T*& new_storage)
+{
+	delete_storage();
+	storage = new_storage;
+}
+
+template <typename T>
+void Stack<T>::throw_if_empty(const char* message) const
+{
+	if (empty())
+		throw std::runtime_error(message);
+}
+
+#endif
