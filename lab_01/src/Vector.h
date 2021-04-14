@@ -34,7 +34,7 @@ public:
 
 	void reverse(); // Reverse order of elements
 
-	size_t size() const; // Get stack size
+	size_t size() const; // Get vector size
 	bool empty() const;  // Vector is empty? 
 
 	void clear(); // Remove all elements from vector
@@ -171,6 +171,12 @@ void Vector<T>::clear()
 {
 	delete_storage();
 	count = 0;
+}
+
+template <typename T>
+T& Vector<T>::operator[](size_t index)
+{
+	return at(index);
 }
 
 template <typename T>
