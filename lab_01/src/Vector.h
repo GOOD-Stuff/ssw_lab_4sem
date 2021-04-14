@@ -41,6 +41,19 @@ public:
 	
 	T& operator[](size_t index); // Access operator
 
+	// Lexicographic comparison operators begin
+
+	bool operator==(const Vector<T>& vector) const;
+	bool operator!=(const Vector<T>& vector) const;
+
+	bool operator<(const Vector<T>& vector) const;
+	bool operator>(const Vector<T>& vector) const;
+
+	bool operator<=(const Vector<T>& vector) const;
+	bool operator>=(const Vector<T>& vector) const;
+
+	// Lexicographic comparison operators end
+
 	// Operator for output all vector elements
 	friend std::ostream& operator<<(std::ostream& out, const Vector<T>& vector)
 	{
@@ -177,6 +190,55 @@ template <typename T>
 T& Vector<T>::operator[](size_t index)
 {
 	return at(index);
+}
+
+template <typename T>
+bool Vector<T>::operator==(const Vector<T>& vector) const
+{
+	if (count != vector.count)
+		return false;
+
+	for (size_t i = 0; i < count; i++)
+		if (storage[i] != vector.storage[i])
+			return false;
+
+	return true;
+}
+
+template <typename T>
+bool Vector<T>::operator!=(const Vector<T>& vector) const
+{
+	return !(*this == vector);
+}
+
+template <typename T>
+bool Vector<T>::operator<(const Vector<T>& vector) const
+{
+	size_t min_count = count < vector.count ? count : vector.count;
+
+	for (size_t i = 0; i < min_count; i++)
+		if (storage[i] >= vector.storage[i])
+			return false;
+
+	return true;
+}
+
+template <typename T>
+bool Vector<T>::operator>(const Vector<T>& vector) const
+{
+	return !(*this < vector) && *this != vector;
+}
+
+template <typename T>
+bool Vector<T>::operator<=(const Vector<T>& vector) const
+{
+	return *this < vector || *this == vector;
+}
+
+template <typename T>
+bool Vector<T>::operator>=(const Vector<T>& vector) const
+{
+	return *this > vector || *this == vector;
 }
 
 template <typename T>
