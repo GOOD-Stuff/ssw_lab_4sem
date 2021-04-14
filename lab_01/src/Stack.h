@@ -11,7 +11,7 @@ private:
 	size_t count; // Count of elements in the stack
 
 private:
-	void delete_storage();                          // Ñlear memory allocated for the stack
+	void delete_storage();                          // Clear memory allocated for the stack
 	void replace_storage(T*& new_storage);		    // Replace stack storage 
 	void throw_if_empty(const char* message) const; // For exceptions when working with empty stack
 
