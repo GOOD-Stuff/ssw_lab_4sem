@@ -10,6 +10,9 @@ private:
 	T* storage;	  // Pointer to array with stack data
 	size_t count; // Count of elements in the stack
 
+	size_t real_size; // Real stack size (capacity)
+	static const size_t reserve = 100; // Reserve cells count
+
 private:
 	void delete_storage();                          // Clear memory allocated for the stack
 	void replace_storage(T*& new_storage);		    // Replace stack storage 
@@ -24,9 +27,10 @@ public:
 
 	T& top(); // Get top element
 
-	size_t size() const; // Get stack size
-	bool empty() const;	 // Stack is empty?
-	
+	size_t size() const;     // Get stack size
+	size_t capacity() const; // Get stack capacity
+	bool empty() const;	     // Stack is empty?
+
 	// Lexicographic comparison operators begin
 
 	bool operator==(const Stack<T>& stack) const;
@@ -61,19 +65,26 @@ Stack<T>::Stack()
 {
 	storage = nullptr;
 	count = 0;
+	real_size = 0;
 }
 
 template <typename T>
 Stack<T>::~Stack()
 {
 	delete_storage();
-	count = 0;
 }
 
 template <typename T>
 void Stack<T>::push(T value)
 {
-	T* new_storage = new T[count + 1];
+	if (count < real_size)
+	{
+		storage[count++] = value;
+		return;
+	}
+
+	real_size += reserve;
+	T* new_storage = new T[real_size];
 
 	for (size_t i = 0; i < count; i++)
 		new_storage[i] = storage[i];
@@ -87,11 +98,15 @@ void Stack<T>::pop()
 {
 	throw_if_empty("You are trying to extract item from empty stack!");
 
-	T* new_storage = new T[--count];
+	if (--count > real_size - reserve)
+		return;
+
+	T* new_storage = new T[count];
 
 	for (size_t i = 0; i < count; i++)
 		new_storage[i] = storage[i];
 
+	real_size -= reserve;
 	replace_storage(new_storage);
 }
 
@@ -106,6 +121,12 @@ template <typename T>
 size_t Stack<T>::size() const
 {
 	return count;
+}
+
+template <typename T>
+size_t Stack<T>::capacity() const
+{
+	return real_size;
 }
 
 template <typename T>
