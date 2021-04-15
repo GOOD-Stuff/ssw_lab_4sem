@@ -1,4 +1,4 @@
-#include "Vector.h"
+#include "vector.h"
 
 Vector::Vector() {
 	arr = nullptr;
@@ -26,12 +26,12 @@ void Vector::push_front(int value)
 void Vector::insert(int value, int index )
 {
 	int* arr_new = new int[++size];
-	
+
 	for (int i = 0; i < index ; i++)
 	{
 		arr_new[i] = arr[i];
 	}
-	
+
 	arr_new[index] = value;
 
 	for (int i = index + 1; i < size; i++)
@@ -46,7 +46,7 @@ void Vector::insert(int value, int index )
 
 std::ostream& operator<<(std::ostream& stream, const Vector& vector)
 {
-	for (int i = 0; i < vector.size; i++) 
+	for (int i = 0; i < vector.size; i++)
 	{
 		stream << vector.arr[i] << "\n";
 	}
@@ -105,7 +105,7 @@ float Vector::get_arithmetic_mean()
 Vector Vector::concat_sort(const Vector& vector)
 {
 	Vector new_vector;
-	
+
 	new_vector.size = size + vector.size;
 	new_vector.arr = new int[new_vector.size];
 
@@ -154,7 +154,7 @@ bool Vector::operator ==  (const Vector& right)
 {
 	if (size != right.size)
 		return false;
-	
+
 	for (int i = 0; i < size; i++)
 	{
 		if (arr[i] != right.arr[i])
@@ -167,9 +167,9 @@ bool Vector::operator != ( const Vector& right)
 {
 	return !(*this == right);
 }
-bool Vector::operator < ( const Vector& right) 
+bool Vector::operator < ( const Vector& right)
 {
-	
+
 	int res_size = (size < right.size) ? size : right.size;
 	for (int i = 0; i < res_size; i++)
 	{
@@ -182,7 +182,7 @@ bool Vector::operator > ( const Vector& right)
 {
 	return !(*this < right) && *this != right;
 }
-bool Vector::operator <= ( const Vector& right) 
+bool Vector::operator <= ( const Vector& right)
 {
 	return (*this == right) || (*this < right);
 }
