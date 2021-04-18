@@ -1,3 +1,6 @@
+#ifndef CLASS_QUEUE_H
+#define CLASS_QUEUE_H
+
 #include <ostream>
 
 template <typename T>
@@ -226,3 +229,5 @@ void Queue<T>::throw_if_empty(const char* message) const
 	if (empty())
 		throw std::runtime_error(message);
 }
+
+#endif
