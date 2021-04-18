@@ -182,10 +182,10 @@ bool Queue<T>::operator<(const Queue<T>& queue) const
 	T* queue_begin = queue.storage + queue.real_size - queue.deleted_count - 1;
 
 	for (size_t i = 0; i < min_count; i++)
-		if (*(this_begin--) >= *(queue_begin--))
-			return false;
+		if (*(this_begin--) < *(queue_begin--))
+			return true;
 
-	return true;
+	return false;
 }
 
 template <typename T>

@@ -231,10 +231,10 @@ bool Vector<T>::operator<(const Vector<T>& vector) const
 	size_t min_count = count < vector.count ? count : vector.count;
 
 	for (size_t i = 0; i < min_count; i++)
-		if (storage[i] >= vector.storage[i])
-			return false;
+		if (storage[i] < vector.storage[i])
+			return true;
 
-	return true;
+	return false;
 }
 
 template <typename T>
