@@ -83,6 +83,10 @@ void Queue<T>::push(T value)
 	if (count < real_size)
 	{
 		storage[real_size - 1 - count++] = value;
+		
+		if (deleted_count > 0)
+			deleted_count--;
+
 		return;
 	}
 
