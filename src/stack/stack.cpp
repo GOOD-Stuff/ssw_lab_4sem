@@ -7,6 +7,11 @@ stack<T>::stack() {
 }
 
 template<typename T>
+stack<T>::~stack() {
+    delete[] arr;
+}
+
+template<typename T>
 stack<T>::stack(int size) {
     init(size);
 }
@@ -27,7 +32,7 @@ void stack<T>::checkDimension() {
         for(int i = 0; i < size - DEFAULT_SIZE; i++)
             _arr[i] = arr[i];
 
-        delete arr;
+        delete[] arr;
         arr = _arr;
     }
 }
