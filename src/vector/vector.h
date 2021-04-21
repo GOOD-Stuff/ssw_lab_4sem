@@ -10,38 +10,121 @@ private:
 	int size;       // Number of elements in a vector
 
 public:
+    /**
+    * @brief Vector constructor
+    */
 	Vector();
+	
+	/**
+    * @brief Vector copy constructor
+    */
 	Vector(const Vector& vector);
+	
+	/**
+    * @brief Vector destructor
+    */
 	~Vector();
 
-	void push_back(int value);					// Add element to end
-	void push_front(int value);					// Add element to front
-	void insert(int value, int index);			// Insert element by index
 
-	void pop_back();							// Delete first element
-	void pop_front();							// Delete last element
-	void erase(int index);						// Delete an element by index
+	/**
+    * @brief Add element to end
+	*
+	* @param int Element to write
+    */
+	void push_back(int value);
+	
+	
+	/**
+    * @brief Add element to front
+	*
+	* @param int Element to write
+    */
+	void push_front(int value);
+	
+	/**
+    * @brief Insert element by index
+	*
+	* @param int Element to write
+	* @param int Position index
+    */
+	void insert(int value, int index);
 
-	int count();								// Returns the number of elements
+	/**
+    * @brief Delete last element
+    */
+	void pop_back();
 
-	int& at(int index);							// Returns a reference to an element with a specified index
-	float get_arithmetic_mean();				// Getting the arithmetic average
+	/**
+    * @brief Delete front element
+    */
+	void pop_front();
 
-	Vector concat_sort(const Vector& vector);	// Outputs a new collection, linked to another, in a sorted form
+	/**
+    * @brief Delete element by index
+	*
+	* @param int Position index
+    */
+	void erase(int index);
+
+	/**
+    * @brief Get number of items on vector
+    *
+    * @return Number of items in vector
+    */
+	int count();
+
+	/**
+    * @brief Get reference to an element with a specified index
+    *
+	* @param int Position index
+    * @return int& Reference to an element with a specified index
+    */
+	int& at(int index);
+	
+	/**
+    * @brief Getting the arithmetic average
+    *
+    * @return float Arithmetic average
+    */
+	float get_arithmetic_mean();
+
+	/**
+    * @brief Outputs a new collection, linked to another, in a sorted form
+    *
+	* @param Vector& Vector for concatenation
+    * @return Vector New converted vector
+    */
+	Vector concat_sort(const Vector& vector);
+	
+	
+	/**
+    * @brief Assignment operator
+    * 
+	* @param Vector& Vector from which we will copy
+    * @return Vector& Current vector
+    */
 	Vector& operator = (const Vector& right);
 
-	// The lexicographic comparison operators
-
+    /**
+     * @brief Comparison operators
+     *
+     * @param Vector& Vector to compare it withV
+     * @return bool Comparison result
+     */
 	bool operator == (const Vector& right);
 	bool operator != (const Vector& right);
 	bool operator < (const Vector& right);
 	bool operator > (const Vector& right);
 	bool operator <= (const Vector& right);
 	bool operator >= (const Vector& right);
-	friend std::ostream& operator<<(std::ostream& stream, const Vector& vector);	// Operator outputs all elements of a vector
 
+    /**
+     * @brief Output vector operator
+     *
+     * @param ostream& Output object
+     * @param Vector& Vector to display
+     */
+	friend std::ostream& operator<<(std::ostream& stream, const Vector& vector);
 };
 
 #endif
-
-
