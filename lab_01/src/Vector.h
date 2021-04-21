@@ -10,12 +10,18 @@ private:
 	T* storage;   // Pointer to array with vector data
 	size_t count; // Count of elements in the vector;
 
+	size_t start_index; // Start vector index
+	size_t end_index;   // End vector index
+	size_t real_size;   // Real vector size (capacity)
+
+	static const size_t reserve = 1024; // Reserve cells count (half - left, half - right)
+
 private:
 	void delete_storage();									   // Clear memory allocated for vector
 	void replace_storage(T*& new_data);						   // Replace vector storage 
 	void throw_if(bool expression, const char* message) const; // For exceptions
-															   
-public:														   
+
+public:
 	Vector();
 	~Vector();
 
@@ -35,11 +41,12 @@ public:
 
 	void reverse(); // Reverse order of elements
 
-	size_t size() const; // Get vector size
-	bool empty() const;  // Vector is empty? 
+	size_t size() const;     // Get vector size
+	size_t capacity() const; // Get vector capacity
+	bool empty() const;      // Vector is empty? 
 
 	void clear(); // Remove all elements from vector
-	
+
 	T& operator[](size_t index); // Access operator
 
 	// Lexicographic comparison operators begin
@@ -60,7 +67,7 @@ public:
 	{
 		vector.throw_if(vector.empty(), "You are trying to display empty vector!");
 
-		for (size_t i = 0; i < vector.size(); i++)
+		for (size_t i = vector.start_index; i < vector.end_index; i++)
 			out << vector.storage[i] << "\n";
 
 		return out;
@@ -71,7 +78,11 @@ template <typename T>
 Vector<T>::Vector()
 {
 	storage = nullptr;
+
 	count = 0;
+	real_size = 0;
+	start_index = 0;
+	end_index = 0;
 }
 
 template <typename T>
@@ -84,92 +95,160 @@ template <typename T>
 T& Vector<T>::front()
 {
 	throw_if(empty(), "You are trying to access first element of empty vector!");
-	return storage[0];
+	return storage[start_index];
 }
 
 template <typename T>
 T& Vector<T>::back()
 {
 	throw_if(empty(), "You are trying to access last element of empty vector!");
-	return storage[count - 1];
+	return storage[end_index - 1];
 }
 
 template <typename T>
 T& Vector<T>::at(size_t index)
 {
-	throw_if(index >= count, "Attempt to access the allocated memory boundary!");
-	return storage[index];
+	throw_if(index > count, "Attempt to access the allocated memory boundary!");
+	return storage[start_index + index];
 }
 
 template <typename T>
 void Vector<T>::push_front(T value)
 {
-	insert(0, value);
+	if (start_index != 0)
+	{
+		storage[--start_index] = value;
+		count++;
+		return;
+	}
+
+	real_size = count + reserve;
+	T* new_storage = new T[real_size];
+
+	size_t new_start_index = (real_size - count) / 2;
+	size_t new_end_index = new_start_index + count;
+
+	for (size_t i = new_start_index; i < new_end_index; i++)
+		new_storage[i] = storage[start_index++];
+
+	new_storage[--new_start_index] = value;
+
+	start_index = new_start_index;
+	end_index = new_end_index;
+
+	count++;
+	replace_storage(new_storage);
 }
 
 template <typename T>
 void Vector<T>::push_back(T value)
 {
-	insert(count, value);
+	if (end_index != real_size)
+	{
+		storage[end_index++] = value;
+		count++;
+		return;
+	}
+
+	real_size = count + reserve;
+	T* new_storage = new T[real_size];
+
+	size_t new_start_index = (real_size - count) / 2;
+	size_t new_end_index = new_start_index + count;
+
+	for (size_t i = new_start_index; i < new_end_index; i++)
+		new_storage[i] = storage[start_index++];
+
+	new_storage[new_end_index++] = value;
+
+	start_index = new_start_index;
+	end_index = new_end_index;
+
+	count++;
+	replace_storage(new_storage);
 }
 
 template <typename T>
 void Vector<T>::insert(size_t index, T value)
 {
-	T* new_data = new T[++count];
+	throw_if(index > count, "Attempt to go beyond the boundaries of vector!");
 
-	for (size_t i = 0; i < index; i++)
-		new_data[i] = storage[i];
+	if (index == 0)
+	{
+		push_front(value);
+		return;
+	}
+	else if (index == end_index)
+	{
+		push_back(value);
+		return;
+	}
 
-	new_data[index] = value;
-
-	for (size_t i = index + 1; i < count; i++)
-		new_data[i] = storage[i - 1];
-
-	replace_storage(new_data);
+	// Need to finish this method...
 }
 
 template <typename T>
 void Vector<T>::pop_front()
 {
 	throw_if(empty(), "You are trying to remove first element of empty vector!");
-	erase(0);
+	
+	count--;
+	start_index++;
+
+	if (start_index > reserve)
+	{
+		real_size = count + reserve;
+		T* new_storage = new T[real_size];
+
+		size_t new_start_index = (real_size - count) / 2;
+		size_t new_end_index = new_start_index + count;
+
+		for (size_t i = new_start_index; i < new_end_index; i++)
+			new_storage[i] = storage[start_index++];
+
+		start_index = new_start_index;
+		end_index = new_end_index;
+
+		replace_storage(new_storage);
+	}
 }
 
 template <typename T>
 void Vector<T>::pop_back()
 {
-	throw_if(empty(), "You are trying to remove last element of empty vector!");
-	erase(count - 1);
+	throw_if(empty(), "You are trying to remove first element of empty vector!");
+
+	count--;
+	end_index--;
+
+	if (real_size - end_index > reserve)
+	{
+		real_size = count + reserve;
+		T* new_storage = new T[real_size];
+
+		size_t new_start_index = (real_size - count) / 2;
+		size_t new_end_index = new_start_index + count;
+
+		for (size_t i = new_start_index; i < new_end_index; i++)
+			new_storage[i] = storage[start_index++];
+
+		start_index = new_start_index;
+		end_index = new_end_index;
+
+		replace_storage(new_storage);
+	}
 }
 
 template <typename T>
 void Vector<T>::erase(size_t index)
 {
-	erase(index, index);
+	// Need to finish this method...
 }
 
 template <typename T>
 void Vector<T>::erase(size_t start_index, size_t end_index)
 {
-	throw_if(empty(), "You are trying to remove element by index of empty vector!");
-	throw_if(start_index > end_index, "Incorrect arguments!");
-	throw_if(start_index >= count || end_index >= count, "Index is outside the vector!");
-
-	size_t exclude_count = end_index - start_index + 1;
-	T* new_data = new T[count - exclude_count];
-
-	size_t current_idx = 0;
-	for (size_t i = 0; i < count; i++)
-	{
-		if (i >= start_index && i <= end_index)
-			continue;
-
-		new_data[current_idx++] = storage[i];
-	}
-
-	replace_storage(new_data);
-	count -= exclude_count;
+	// Need to finish this method...
 }
 
 template <typename T>
@@ -177,7 +256,7 @@ void Vector<T>::reverse()
 {
 	throw_if(empty(), "You are trying to reverse empty vector!");
 
-	for (int i = 0; i < count / 2; i++)
+	for (size_t i = start_index; i < count / 2; i++)
 		std::swap(storage[i], storage[count - i - 1]);
 }
 
@@ -185,6 +264,12 @@ template <typename T>
 size_t Vector<T>::size() const
 {
 	return count;
+}
+
+template <typename T>
+size_t Vector<T>::capacity() const
+{
+	return real_size;
 }
 
 template <typename T>
@@ -197,7 +282,11 @@ template <typename T>
 void Vector<T>::clear()
 {
 	delete_storage();
+
 	count = 0;
+	real_size = 0;
+	start_index = 0;
+	end_index = 0;
 }
 
 template <typename T>
@@ -212,8 +301,11 @@ bool Vector<T>::operator==(const Vector<T>& vector) const
 	if (count != vector.count)
 		return false;
 
+	size_t this_begin = start_index;
+	size_t vector_begin = vector.start_index;
+
 	for (size_t i = 0; i < count; i++)
-		if (storage[i] != vector.storage[i])
+		if (storage[this_begin++] != vector.storage[vector_begin++])
 			return false;
 
 	return true;
@@ -230,8 +322,11 @@ bool Vector<T>::operator<(const Vector<T>& vector) const
 {
 	size_t min_count = count < vector.count ? count : vector.count;
 
+	size_t this_begin = start_index;
+	size_t vector_begin = vector.start_index;
+
 	for (size_t i = 0; i < min_count; i++)
-		if (storage[i] < vector.storage[i])
+		if (storage[this_begin++] < vector.storage[vector_begin++])
 			return true;
 
 	return false;
