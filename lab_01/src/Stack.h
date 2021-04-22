@@ -11,7 +11,7 @@ private:
 	size_t count; // Count of elements in the stack
 
 	size_t real_size; // Real stack size (capacity)
-	static const size_t reserve = 100; // Reserve cells count
+	static const size_t reserve = 1024; // Reserve cells count
 
 private:
 	void delete_storage();                          // Clear memory allocated for the stack

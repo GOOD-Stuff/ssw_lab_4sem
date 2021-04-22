@@ -12,7 +12,7 @@ private:
 
 	size_t deleted_count; // Number that determines when to clear unused memory
 	size_t real_size;     // Real queue size (capacity)
-	static const size_t reserve = 100; // Reserve cells count
+	static const size_t reserve = 1024; // Reserve cells count
 
 private:
 	void delete_storage();                          // Clear memory allocated for the queue
