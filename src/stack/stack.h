@@ -1,7 +1,7 @@
 #ifndef CLASS_STACK_H
 #define CLASS_STACK_H
 
-#define DEFAULT_SIZE 20
+#define DEFAULT_SIZE 1024
 
 template<typename T>
 class stack {
