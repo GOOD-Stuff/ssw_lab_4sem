@@ -36,8 +36,8 @@ public:
 	void pop_front(); // Remove first element
 	void pop_back();  // Remove last element
 
-	void erase(size_t index);                         // Remove element by index
-	void erase(size_t start_index, size_t end_index); // Remove elements in range
+	void erase(size_t index);                     // Remove element by index
+	void erase(size_t start_idx, size_t end_idx); // Remove elements in range
 
 	void reverse(); // Reverse order of elements
 
@@ -173,18 +173,48 @@ void Vector<T>::insert(size_t index, T value)
 {
 	throw_if(index > count, "Attempt to go beyond the boundaries of vector!");
 
-	if (index == 0)
+	if (start_index + index == 0)
 	{
 		push_front(value);
 		return;
 	}
-	else if (index == end_index)
+	else if (start_index + index == end_index)
 	{
 		push_back(value);
 		return;
 	}
 
-	// Need to finish this method...
+	count++;
+
+	if (end_index < real_size)
+	{
+		for (size_t i = end_index - 1; i >= index + start_index; i--)
+			storage[i + 1] = storage[i];
+
+		storage[index + start_index] = value;
+		end_index++;
+	}
+	else
+	{
+		real_size = count + reserve;
+		T* new_storage = new T[real_size];
+
+		size_t new_start_index = (real_size - count) / 2;
+		size_t new_end_index = new_start_index + count;
+
+		for (size_t i = new_start_index; i < new_start_index + index; i++)
+			new_storage[i] = storage[start_index++];
+
+		new_storage[new_start_index + index] = value;
+
+		for (size_t i = new_start_index + index + 1; i < new_end_index; i++)
+			new_storage[i] = storage[start_index++];
+
+		start_index = new_start_index;
+		end_index = new_end_index;
+
+		replace_storage(new_storage);
+	}
 }
 
 template <typename T>
@@ -242,13 +272,53 @@ void Vector<T>::pop_back()
 template <typename T>
 void Vector<T>::erase(size_t index)
 {
-	// Need to finish this method...
+	if (index == 0)
+	{
+		pop_front();
+		return;
+	}
+	else if (index == count - 1)
+	{
+		pop_back();
+		return;
+	}
+
+	erase(index, index);
 }
 
 template <typename T>
-void Vector<T>::erase(size_t start_index, size_t end_index)
+void Vector<T>::erase(size_t start_idx, size_t end_idx)
 {
-	// Need to finish this method...
+	if ((start_idx == 0 && end_idx == 0) || (start_idx == count - 1 && end_idx == count - 1))
+	{
+		erase(start_idx);
+		return;
+	}
+
+	size_t delta_count = end_idx - start_idx + 1;
+	count -= delta_count;
+
+	real_size = count + reserve;
+	T* new_storage = new T[real_size];
+
+	size_t new_start_index = (real_size - count) / 2;
+	size_t new_end_index = new_start_index + count;
+
+	size_t j = new_start_index;
+	size_t end = start_index + start_idx;
+
+	for (size_t i = start_index; i < end; i++)
+		new_storage[j++] = storage[start_index++];
+
+	start_index += delta_count;
+
+	for (size_t i = start_index; i < end_index; i++)
+		new_storage[j++] = storage[start_index++];
+
+	start_index = new_start_index;
+	end_index = new_end_index;
+
+	replace_storage(new_storage);
 }
 
 template <typename T>
