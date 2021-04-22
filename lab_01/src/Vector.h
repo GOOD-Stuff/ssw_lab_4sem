@@ -108,7 +108,7 @@ T& Vector<T>::back()
 template <typename T>
 T& Vector<T>::at(size_t index)
 {
-	throw_if(index > count, "Attempt to access the allocated memory boundary!");
+	throw_if(index >= count, "Attempt to access the allocated memory boundary!");
 	return storage[start_index + index];
 }
 
@@ -171,7 +171,7 @@ void Vector<T>::push_back(T value)
 template <typename T>
 void Vector<T>::insert(size_t index, T value)
 {
-	throw_if(index > count, "Attempt to go beyond the boundaries of vector!");
+	throw_if(index >= count, "Attempt to go beyond the boundaries of vector!");
 
 	if (start_index + index == 0)
 	{
@@ -289,6 +289,10 @@ void Vector<T>::erase(size_t index)
 template <typename T>
 void Vector<T>::erase(size_t start_idx, size_t end_idx)
 {
+	throw_if(empty(), "You are trying to remove element of empty vector!");
+	throw_if(start_idx >= count || end_idx >= count, "Attempt to access the allocated memory boundary!");
+	throw_if(start_idx > end_idx, "Incorrect arguments!");
+
 	if ((start_idx == 0 && end_idx == 0) || (start_idx == count - 1 && end_idx == count - 1))
 	{
 		erase(start_idx);
