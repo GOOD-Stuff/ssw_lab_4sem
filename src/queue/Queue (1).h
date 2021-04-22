@@ -13,6 +13,7 @@ private:
 
 public:
 	Queue();
+	Queue(const Queue& queue);
 	~Queue();
 
 	void push(int value);
@@ -20,7 +21,12 @@ public:
 
 	int& peek();
 	int count();
-	
+
+	float get_arithmetic_mean();
+	Queue concat_sort(const Queue& queue);
+
+	Queue& operator = (const Queue& queue);
+
 	bool operator == (const Queue& queue);
 	bool operator != (const Queue& queue);
 

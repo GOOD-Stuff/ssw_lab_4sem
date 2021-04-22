@@ -8,6 +8,11 @@ Queue::Queue()
     start_index = 0;
 }
 
+Queue::Queue(const Queue& queue)
+{
+    *this = queue;
+}
+
 Queue::~Queue()
 {
     if (data)
@@ -28,7 +33,8 @@ void Queue::push(int value)
 
         data = new_data;
         start_index = 0;
-    } else {
+    }
+    else {
         data[start_index + size++] = value;
     }
 }
@@ -65,6 +71,64 @@ int& Queue::peek()
 int Queue::count()
 {
     return size;
+}
+
+float Queue::get_arithmetic_mean()
+{
+    float sum = 0.0f;
+
+    for (int i = 0; i < size; i++)
+        sum += data[i];
+
+    return sum / size;
+}
+
+Queue Queue::concat_sort(const Queue& queue)
+{
+    Queue new_queue;
+
+    new_queue.size = size + queue.size;
+    new_queue.data = new int[new_queue.size];
+
+    int k = 0;
+
+    for (int i = start_index; i < start_index + size; i++) {
+        new_queue.data[k++] = data[i];
+    }
+
+    for (int i = queue.start_index; i < queue.start_index + queue.size; i++) {
+        new_queue.data[k++] = queue.data[i];
+    }
+
+    for (int i = 0; i < new_queue.size; i++) {
+        for (int j = 0; j < new_queue.size - 1; j++) {
+            if (new_queue.data[j] > new_queue.data[j + 1]) {
+                int temp = new_queue.data[j];
+                new_queue.data[j] = new_queue.data[j + 1];
+                new_queue.data[j + 1] = temp;
+            }
+        }
+    }
+
+    return new_queue;
+}
+
+Queue& Queue::operator = (const Queue& queue)
+{
+    if (data != nullptr) {
+        delete[] data;
+    }
+
+    size = queue.size;
+    data = new int[size];
+
+    int k = 0;
+
+    for (int i = queue.start_index; i < queue.start_index + size; i++) {
+        data[k++] = queue.data[i];
+    }
+
+    return *this;
 }
 
 bool Queue::operator == (const Queue& queue)
@@ -119,11 +183,6 @@ bool Queue::operator >= (const Queue& queue)
 
 ostream& operator << (ostream& stream, Queue& queue)
 {
-    int max = queue.size;
-
-    if (queue.start_index > max)
-        max += queue.start_index;
-
     for (int i = queue.start_index; i < queue.start_index + queue.size; i++) {
         stream << queue.data[i] << "\n";
     }
