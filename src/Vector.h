@@ -14,7 +14,7 @@ private:
 	size_t end_index;   // End vector index
 	size_t real_size;   // Real vector size (capacity)
 
-	static const size_t reserve = 1024; // Reserve cells count (half - left, half - right)
+	static constexpr size_t reserve = 1024; // Reserve cells count (half - left, half - right)
 
 private:
 	void delete_storage();									   // Clear memory allocated for vector
@@ -38,6 +38,7 @@ public:
 
 	void erase(size_t index);                     // Remove element by index
 	void erase(size_t start_idx, size_t end_idx); // Remove elements in range
+	void erase_in_vrange(T start_value, T end_value); // Remove elements in values range
 
 	void reverse(); // Reverse order of elements
 
@@ -326,12 +327,35 @@ void Vector<T>::erase(size_t start_idx, size_t end_idx)
 }
 
 template <typename T>
+void Vector<T>::erase_in_vrange(T start_value, T end_value)
+{
+	bool completed = false;
+	
+	while (!completed)
+	{
+		for (size_t i = start_index; i < end_index; i++)
+		{
+			if (storage[i] >= start_value && storage[i] <= end_value)
+			{
+				erase(i - start_index);
+				break;
+			}
+
+			completed = true;
+		}
+	}
+}
+
+template <typename T>
 void Vector<T>::reverse()
 {
 	throw_if(empty(), "You are trying to reverse empty vector!");
 
-	for (size_t i = start_index; i < count / 2; i++)
-		std::swap(storage[i], storage[count - i - 1]);
+	size_t start = start_index;
+	size_t end = end_index - 1;
+
+	for (size_t i = 0; i < count / 2; i++)
+		std::swap(storage[start++], storage[end--]);
 }
 
 template <typename T>
@@ -445,7 +469,7 @@ template <typename T>
 void Vector<T>::throw_if(bool expression, const char* message) const
 {
 	if (expression)
-		throw std::exception(message);
+		throw std::runtime_error(message);
 }
 
 #endif
