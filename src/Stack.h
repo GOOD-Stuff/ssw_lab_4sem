@@ -11,7 +11,7 @@ private:
 	size_t count; // Count of elements in the stack
 
 	size_t real_size; // Real stack size (capacity)
-	static const size_t reserve = 1024; // Reserve cells count
+	static constexpr size_t reserve = 1024; // Reserve cells count
 
 private:
 	void delete_storage();                          // Clear memory allocated for the stack
@@ -26,6 +26,9 @@ public:
 	void pop();         // Delete element
 
 	T& top(); // Get top element
+
+	void erase_in_vrange(T start_value, T end_value); // Remove elements in values range
+	void reverse(); // Reverse order of elements
 
 	size_t size() const;     // Get stack size
 	size_t capacity() const; // Get stack capacity
@@ -118,6 +121,21 @@ T& Stack<T>::top()
 }
 
 template <typename T>
+void Stack<T>::erase_in_vrange(T start_value, T end_value)
+{
+
+}
+
+template <typename T>
+void Stack<T>::reverse()
+{
+	throw_if_empty("You are trying to reverse empty stack!");
+
+	for (size_t i = 0; i < count / 2; i++)
+		std::swap(storage[i], storage[count - i - 1]);
+}
+
+template <typename T>
 size_t Stack<T>::size() const
 {
 	return count;
@@ -175,7 +193,7 @@ bool Stack<T>::operator<(const Stack<T>& stack) const
 				return true;
 		}
 
-	return false;
+	return count < stack.count;
 }
 
 template <typename T>

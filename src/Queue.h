@@ -12,7 +12,7 @@ private:
 
 	size_t deleted_count; // Number that determines when to clear unused memory
 	size_t real_size;     // Real queue size (capacity)
-	static const size_t reserve = 1024; // Reserve cells count
+	static constexpr size_t reserve = 1024; // Reserve cells count
 
 private:
 	void delete_storage();                          // Clear memory allocated for the queue
@@ -27,6 +27,9 @@ public:
 	void pop();         // Delete element
 
 	T& begin(); // Get begin element
+
+	void erase_in_vrange(T start_value, T end_value); // Remove elements in values range
+	void reverse(); // Reverse order of elements
 
 	size_t size() const;     // Get queue size
 	size_t capacity() const; // Get queue capacity
@@ -134,6 +137,24 @@ T& Queue<T>::begin()
 }
 
 template <typename T>
+void Queue<T>::erase_in_vrange(T start_value, T end_value)
+{
+
+}
+
+template <typename T>
+void Queue<T>::reverse()
+{
+	throw_if_empty("You are trying to reverse empty queue!");
+
+	size_t start = real_size - deleted_count - 1;
+	size_t end = real_size - deleted_count - count;
+
+	for (size_t i = 0; i < count / 2; i++)
+		std::swap(storage[start--], storage[end++]);
+}
+
+template <typename T>
 size_t Queue<T>::size() const
 {
 	return count;
@@ -185,7 +206,7 @@ bool Queue<T>::operator<(const Queue<T>& queue) const
 		if (*(this_begin--) < *(queue_begin--))
 			return true;
 
-	return false;
+	return count < queue.count;
 }
 
 template <typename T>
