@@ -427,7 +427,7 @@ bool Vector<T>::operator<(const Vector<T>& vector) const
 		if (storage[this_begin++] < vector.storage[vector_begin++])
 			return true;
 
-	return false;
+	return count < vector.count;
 }
 
 template <typename T>
