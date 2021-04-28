@@ -1,8 +1,9 @@
 #include "vector.h"
 
 Vector::Vector() {
-	arr = nullptr;
-	size = 0;
+	size = 1024;
+	head = -1;
+	arr = new int[size];
 }
 
 Vector::Vector(const Vector& vector)
@@ -14,79 +15,51 @@ Vector::~Vector() {
 	if (arr)
 		delete[] arr;
 }
+
 void Vector::push_back(int value)
 {
-	insert(value, size);
-}
-void Vector::push_front(int value)
-{
-	insert(value, 0);
-}
+	if(++head == size) {
+		size += 1024;
+		int* arr_new = new int[size];
 
-void Vector::insert(int value, int index )
-{
-	int* arr_new = new int[++size];
+		for (int i = 0; i <= head ; i++)
+		{
+			arr_new[i] = arr[i];
+		}
 
-	for (int i = 0; i < index ; i++)
-	{
-		arr_new[i] = arr[i];
+		delete[] arr;
+		arr = arr_new;
 	}
 
-	arr_new[index] = value;
-
-	for (int i = index + 1; i < size; i++)
-	{
-		arr_new[i] = arr[i - 1];
-
-	}
-
-	delete[] arr;
-	arr = arr_new;
+	arr[head] = value;
 }
 
 std::ostream& operator<<(std::ostream& stream, const Vector& vector)
 {
-	for (int i = 0; i < vector.size; i++)
-	{
-		stream << vector.arr[i] << "\n";
-	}
+	for (int i = 0; i <= vector.head; i++)
+		stream << vector.arr[i] << " ";
 
 	return stream;
 }
 
 void Vector::pop_back()
 {
-	erase(size - 1);
-}
+	if(head == -1)
+        throw "Vector is empty";
 
-void Vector::pop_front()
-{
-	erase(0);
-}
-
-void Vector::erase(int index)
-{
-	int* arr_new = new int[size - 1];
-	int t = 0;
-
-	for (int i = 0; i < size; i++)
-	{
-		if (i != index)
-			arr_new[t++] = arr[i];
-
-	}
-	delete[] arr;
-	arr = arr_new;
-	size--;
+    head--;
 }
 
 int Vector::count()
 {
-	return size;
+	return head + 1;
 }
 
 int& Vector::at(int index)
 {
+	if(index > head)
+		throw "Element not found";
+
 	return arr[index];
 }
 
@@ -94,35 +67,33 @@ float Vector::get_arithmetic_mean()
 {
 	float sum = 0.0f;
 
-	for (int i = 0; i < size; i++)
+	for (int i = 0; i <= head; i++)
 	{
 		sum += arr[i];
 	}
 
-	return sum / size;
+	return sum / (head + 1);
 }
 
 Vector Vector::concat_sort(const Vector& vector)
 {
 	Vector new_vector;
 
-	new_vector.size = size + vector.size;
+	new_vector.size = head + 1 + vector.head + 1;
 	new_vector.arr = new int[new_vector.size];
 
-	int j = 0;
-
-	for (int i = 0; i < size; i++)
+	for (int i = 0; i <= head; i++)
 	{
-		new_vector.arr[j++] = arr[i];
+		new_vector.push_back(arr[i]);
 	}
 
-	for (int i = 0; i < vector.size; i++)
+	for (int i = 0; i <= vector.head; i++)
 	{
-		new_vector.arr[j++] = vector.arr[i];
+		new_vector.push_back(arr[i]);
 	}
 
-	for (int i = 0; i < new_vector.size; i++) {
-		for (int j = 0; j < new_vector.size - 1; j++) {
+	for (int i = 0; i <= new_vector.head; i++) {
+		for (int j = 0; j <= new_vector.head - 1; j++) {
 			if (new_vector.arr[j] > new_vector.arr[j + 1]) {
 				int temp = new_vector.arr[j];
 				new_vector.arr[j] = new_vector.arr[j + 1];
@@ -142,7 +113,7 @@ Vector& Vector::operator = (const Vector& vector)
 	size = vector.size;
 	arr = new int[size];
 
-	for (int i = 0; i < size; i++)
+	for (int i = 0; i <= head; i++)
 	{
 		arr[i] = vector.arr[i];
 	}
@@ -152,10 +123,10 @@ Vector& Vector::operator = (const Vector& vector)
 
 bool Vector::operator ==  (const Vector& right)
 {
-	if (size != right.size)
+	if (head != right.head)
 		return false;
 
-	for (int i = 0; i < size; i++)
+	for (int i = 0; i <= head; i++)
 	{
 		if (arr[i] != right.arr[i])
 			return false;
@@ -163,25 +134,42 @@ bool Vector::operator ==  (const Vector& right)
 
 	return true;
 }
+
 bool Vector::operator != ( const Vector& right)
 {
 	return !(*this == right);
 }
-bool Vector::operator < ( const Vector& right)
-{
 
-	int res_size = (size < right.size) ? size : right.size;
-	for (int i = 0; i < res_size; i++)
-	{
-		if (arr[i] >= right.arr[i])
-			return false;
-	}
-	return true;
+bool Vector::operator<(const Vector& right) {
+    int thisCount = head + 1;
+    int rightCount = right.head + 1;
+    int cnt = (thisCount > rightCount) ? rightCount : thisCount;
+
+    for(int i = 0; i < cnt; i++) {
+        if(arr[i] == right.arr[i])
+            continue;
+
+        return arr[i] < right.arr[i];
+    }
+
+    return rightCount > thisCount ? true : false;
 }
-bool Vector::operator > ( const Vector& right)
-{
-	return !(*this < right) && *this != right;
+
+bool Vector::operator>(const Vector& right) {
+    int thisCount = head + 1;
+    int rightCount = right.head + 1;
+    int cnt = (thisCount > rightCount) ? rightCount : thisCount;
+
+    for(int i = 0; i < cnt; i++) {
+        if(arr[i] == right.arr[i])
+            continue;
+
+        return arr[i] > right.arr[i];
+    }
+
+    return thisCount > rightCount ? true : false;
 }
+
 bool Vector::operator <= ( const Vector& right)
 {
 	return (*this == right) || (*this < right);

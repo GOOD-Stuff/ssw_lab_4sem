@@ -36,7 +36,7 @@ public:
 	bool operator <= (const Queue& queue);
 	bool operator >= (const Queue& queue);
 
-	friend ostream& operator << (ostream& stream, Queue& queue);
+	friend ostream& operator << (ostream& stream, const Queue& queue);
 };
 
 #endif

@@ -2,29 +2,29 @@
 #include "stack.h"
 
 template<typename T>
-stack<T>::stack() {
+Stack<T>::Stack() {
     init(DEFAULT_SIZE);
 }
 
 template<typename T>
-stack<T>::~stack() {
+Stack<T>::~Stack() {
     delete[] arr;
 }
 
 template<typename T>
-stack<T>::stack(int size) {
+Stack<T>::Stack(int size) {
     init(size);
 }
 
 template<typename T>
-void stack<T>::init(int size) {
+void Stack<T>::init(int size) {
     size = size;
     head = -1;
     arr = new T[size];
 }
 
 template<typename T>
-void stack<T>::checkDimension() {
+void Stack<T>::checkDimension() {
     if(size - count() == 0) {
         size += DEFAULT_SIZE;
         T* _arr = new T[size];
@@ -38,13 +38,13 @@ void stack<T>::checkDimension() {
 }
 
 template<typename T>
-void stack<T>::push(T item) {
+void Stack<T>::push(T item) {
     checkDimension();
     arr[++head] = item;
 }
 
 template<typename T>
-T stack<T>::pop() {
+T Stack<T>::pop() {
     if(head == -1)
         throw "Stack is empty";
 
@@ -52,7 +52,7 @@ T stack<T>::pop() {
 }
 
 template<typename T>
-T stack<T>::peek() {
+T Stack<T>::peek() {
     if(head == -1)
         throw "Stack is empty";
 
@@ -60,11 +60,11 @@ T stack<T>::peek() {
 }
 
 template<typename T>
-stack<T> stack<T>::concat(const stack<T>& st) {
+Stack<T> Stack<T>::concat(const Stack<T>& st) {
     int thisCount = count();
     int contacStackCount = st.count();
 
-    stack<T> newStack(thisCount + contacStackCount + DEFAULT_SIZE);
+    Stack<T> newStack(thisCount + contacStackCount + DEFAULT_SIZE);
 
     for(int i = 0; i < count(); i++)
         newStack.push(arr[i]);
@@ -74,7 +74,7 @@ stack<T> stack<T>::concat(const stack<T>& st) {
 
     for (int i = 0; i < newStack.count(); i++) {
 		for (int j = 0; j < newStack.count() - 1; j++) {
-			if (newStack.arr[j] > newStack.arr[j + 1]) {
+			if (newStack.arr[j] < newStack.arr[j + 1]) {
 				T temp = newStack.arr[j];
 				newStack.arr[j] = newStack.arr[j + 1];
 				newStack.arr[j + 1] = temp;
@@ -86,7 +86,7 @@ stack<T> stack<T>::concat(const stack<T>& st) {
 }
 
 template<typename T>
-T stack<T>::getAverage() {
+T Stack<T>::getAverage() {
     T sum = arr[0];
 
     for(int i = 1; i < count(); i++)
@@ -96,7 +96,7 @@ T stack<T>::getAverage() {
 }
 
 template<typename T>
-bool stack<T>::operator<(const stack<T>& right) {
+bool Stack<T>::operator<(const Stack<T>& right) {
     int thisCount = count();
     int rightCount = right.count();
     int cnt = (thisCount > rightCount) ? rightCount : thisCount;
@@ -112,7 +112,7 @@ bool stack<T>::operator<(const stack<T>& right) {
 }
 
 template<typename T>
-bool stack<T>::operator>(const stack<T>& right) {
+bool Stack<T>::operator>(const Stack<T>& right) {
     int thisCount = count();
     int rightCount = right.count();
     int cnt = (thisCount > rightCount) ? rightCount : thisCount;
@@ -128,7 +128,7 @@ bool stack<T>::operator>(const stack<T>& right) {
 }
 
 template<typename T>
-bool stack<T>::operator==(const stack<T>& right) {
+bool Stack<T>::operator==(const Stack<T>& right) {
     if(count() != right.count())
         return false;
 
@@ -141,26 +141,24 @@ bool stack<T>::operator==(const stack<T>& right) {
 }
 
 template<typename T>
-bool stack<T>::operator!=(const stack<T>& right) {
+bool Stack<T>::operator!=(const Stack<T>& right) {
     return !(*this == right);
 }
 
 template<typename T>
-bool stack<T>::operator<=(const stack<T>& right) {
+bool Stack<T>::operator<=(const Stack<T>& right) {
     return (*this == right) || (*this < right);
 }
 
 template<typename T>
-bool stack<T>::operator>=(const stack<T>& right) {
+bool Stack<T>::operator>=(const Stack<T>& right) {
     return (*this == right) || (*this > right);
 }
 
 template<class T>
-std::ostream& operator<<(std::ostream& stream, const stack<T>& stack) {
-    stream << "Count: " << stack.count() << std::endl;
-
-    for(int i = stack.head; i >= 0; i--)
-		stream << stack.arr[i] << std::endl;
+std::ostream& operator<<(std::ostream& stream, const Stack<T>& stack) {
+    for(int i = 0; i <= stack.head; i++)
+		stream << stack.arr[i] << " ";
 
     return stream;
 }

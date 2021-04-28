@@ -4,7 +4,7 @@
 #define DEFAULT_SIZE 1024
 
 template<typename T>
-class stack {
+class Stack {
     private:
         int head;
         int size;
@@ -12,19 +12,19 @@ class stack {
         void init(int);
         void checkDimension();
     public:
-        ~stack();
+        ~Stack();
 
         /**
          * @brief Stack constructor
          */
-        stack();
+        Stack();
 
         /**
          * @brief Creates an object with a specified initial stack size
          *
          * @param size Initial stack size
          */
-        stack(int);
+        Stack(int);
 
         /**
          * @brief Adds an item to the stack
@@ -69,17 +69,17 @@ class stack {
          * @param stack Second stack for concatenation
          * @return A new stack containing two stacks (current and transferred)
          */
-        stack<T> concat(const stack<T>& stack);
+        Stack<T> concat(const Stack<T>& stack);
 
-        bool operator<(const stack<T>& right);
-        bool operator>(const stack<T>& right);
-        bool operator==(const stack<T>& right);
-        bool operator!=(const stack<T>& right);
-        bool operator<=(const stack<T>& right);
-        bool operator>=(const stack<T>& right);
+        bool operator<(const Stack<T>& right);
+        bool operator>(const Stack<T>& right);
+        bool operator==(const Stack<T>& right);
+        bool operator!=(const Stack<T>& right);
+        bool operator<=(const Stack<T>& right);
+        bool operator>=(const Stack<T>& right);
 
         template<class U>
-        friend std::ostream& operator<<(std::ostream& stream, const stack<U>& stack);
+        friend std::ostream& operator<<(std::ostream& stream, const Stack<U>& stack);
 };
 
 #endif

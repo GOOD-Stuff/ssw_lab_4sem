@@ -153,22 +153,34 @@ bool Queue::operator != (const Queue& queue)
     return !(*this == queue);
 }
 
-bool Queue::operator < (const Queue& queue)
-{
-    int min_size = size < queue.size ? size : queue.size;
+bool Queue::operator<(const Queue& right) {
+    int thisCount = size;
+    int rightCount = right.size;
+    int cnt = (thisCount > rightCount) ? rightCount : thisCount;
 
-    for (int i = 0; i < min_size; i++) {
-        if (data[start_index + i] < queue.data[queue.start_index + i]) {
-            return true;
-        }
+    for(int i = 0; i < cnt; i++) {
+        if(data[i] == right.data[i])
+            continue;
+
+        return data[i] < right.data[i];
     }
 
-    return false;
+    return rightCount > thisCount ? true : false;
 }
 
-bool Queue::operator > (const Queue& queue)
-{
-    return !(*this < queue) && (*this != queue);
+bool Queue::operator>(const Queue& right) {
+    int thisCount = size;
+    int rightCount = right.size;
+    int cnt = (thisCount > rightCount) ? rightCount : thisCount;
+
+    for(int i = 0; i < cnt; i++) {
+        if(data[i] == right.data[i])
+            continue;
+
+        return data[i] > right.data[i];
+    }
+
+    return thisCount > rightCount ? true : false;
 }
 
 bool Queue::operator <= (const Queue& queue)
@@ -181,10 +193,10 @@ bool Queue::operator >= (const Queue& queue)
     return (*this > queue) || (*this == queue);
 }
 
-ostream& operator << (ostream& stream, Queue& queue)
+ostream& operator << (ostream& stream, const Queue& queue)
 {
     for (int i = queue.start_index; i < queue.start_index + queue.size; i++) {
-        stream << queue.data[i] << "\n";
+        stream << queue.data[i] << " ";
     }
 
     return stream;
