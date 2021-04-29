@@ -8,6 +8,12 @@ Queue::Queue()
     start_index = 0;
 }
 
+Queue::Queue(int size) {
+    this->size = size;
+    start_index = 0;
+    data = new int[size];
+}
+
 Queue::Queue(const Queue& queue)
 {
     *this = queue;
@@ -85,10 +91,7 @@ float Queue::get_arithmetic_mean()
 
 Queue Queue::concat_sort(const Queue& queue)
 {
-    Queue new_queue;
-
-    new_queue.size = size + queue.size;
-    new_queue.data = new int[new_queue.size];
+    Queue new_queue(size + queue.size);
 
     int k = 0;
 

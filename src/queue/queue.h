@@ -14,6 +14,7 @@ private:
 public:
 	Queue();
 	Queue(const Queue& queue);
+	Queue(int size);
 	~Queue();
 
 	void push(int value);

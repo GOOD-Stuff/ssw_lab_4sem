@@ -6,6 +6,12 @@ Vector::Vector() {
 	arr = new int[size];
 }
 
+Vector::Vector(int size) {
+	this->size = size;
+	head = -1;
+	arr = new int[size];
+}
+
 Vector::Vector(const Vector& vector)
 {
 	*this = vector;
@@ -77,10 +83,7 @@ float Vector::get_arithmetic_mean()
 
 Vector Vector::concat_sort(const Vector& vector)
 {
-	Vector new_vector;
-
-	new_vector.size = head + 1 + vector.head + 1;
-	new_vector.arr = new int[new_vector.size];
+	Vector new_vector(head + 1 + vector.head + 1);
 
 	for (int i = 0; i <= head; i++)
 	{

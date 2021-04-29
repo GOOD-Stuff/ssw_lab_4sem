@@ -16,6 +16,11 @@ public:
     */
 	Vector();
 
+    /**
+    * @brief Vector constructor
+    */
+	Vector(int);
+
 	/**
     * @brief Vector copy constructor
     */

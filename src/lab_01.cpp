@@ -4,9 +4,9 @@
 #include <stack>
 #include <queue>
 #include <string>
-#include "vector/vector.h"
+#include "vector/vector.cpp"
 #include "stack/stack.cpp"
-#include "queue/queue.h"
+#include "queue/queue.cpp"
 #include "timer.h"
 
 using namespace std;
@@ -96,7 +96,7 @@ void testQueue(int size) {
 
 void testQueuePush(int size) {
 	Timer t1;
-	int arr[size];
+	int* arr = new int[size];
 
 	for(int i = 0; i < size; i++) {
 		arr[i] = rand(0, 100);
@@ -112,6 +112,8 @@ void testQueuePush(int size) {
 
 	cout << "Время добавления элементов в std_queue: " << t2.getTime() << endl;
 	cout << "Итоговый Queue: " << *my_queue << endl;
+
+	delete[] arr;
 }
 
 void testQueuePop() {
@@ -194,7 +196,7 @@ void testStack(int size) {
 
 void testStackPush(int size) {
 	Timer t1;
-	int arr[size];
+	int* arr = new int[size];
 
 	for(int i = 0; i < size; i++) {
 		arr[i] = rand(0, 100);
@@ -210,6 +212,8 @@ void testStackPush(int size) {
 
 	cout << "Время добавления элементов в std_stack: " << t2.getTime() << endl;
 	cout << "Итоговый Stack: " << *my_stack << endl;
+
+	delete[] arr;
 }
 
 void testStackPop() {
