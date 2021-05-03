@@ -10,7 +10,7 @@ labs:
 
 .PHONY: run
 run: 
-	./src/lab_work
+	./src
 
 clean:
 	rm -rf lab_work
