@@ -139,7 +139,33 @@ T& Queue<T>::begin()
 template <typename T>
 void Queue<T>::erase_in_vrange(T start_value, T end_value)
 {
+	size_t items_found = 0;
 
+	int rsize = static_cast<int>(real_size);
+	int cnt = static_cast<int>(count);
+	int del_cnt = static_cast<int>(deleted_count);
+
+	for (int i = rsize - del_cnt - 1; i > rsize - del_cnt - cnt - 1; i--)
+		if (storage[i] >= start_value && storage[i] <= end_value)
+			items_found++;
+
+	if (items_found == 0)
+		return;
+
+	T* new_storage = new T[real_size];
+
+	size_t j = real_size - 1;
+	for (int i = rsize - del_cnt - 1; i > rsize - del_cnt - cnt - 1; i--)
+	{
+		if (storage[i] >= start_value && storage[i] <= end_value)
+			continue;
+
+		new_storage[j--] = storage[i];
+	}
+
+	deleted_count = 0;
+	count -= items_found;
+	replace_storage(new_storage);
 }
 
 template <typename T>

@@ -123,7 +123,29 @@ T& Stack<T>::top()
 template <typename T>
 void Stack<T>::erase_in_vrange(T start_value, T end_value)
 {
+	size_t items_found = 0;
 
+	for (size_t i = 0; i < count; i++)
+		if (storage[i] >= start_value && storage[i] <= end_value)
+			items_found++;
+
+	if (items_found == 0)
+		return;
+	
+	real_size = count - items_found;
+	T* new_storage = new T[real_size];
+
+	size_t j = 0;
+	for (size_t i = 0; i < count; i++)
+	{
+		if (storage[i] >= start_value && storage[i] <= end_value)
+			continue;
+		
+		new_storage[j++] = storage[i];
+	}
+
+	count -= items_found;
+	replace_storage(new_storage);
 }
 
 template <typename T>
