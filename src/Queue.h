@@ -89,7 +89,7 @@ void Queue<T>::push(T value)
 	if (count < real_size)
 	{
 		storage[real_size - 1 - count++] = value;
-		
+
 		if (deleted_count > 0)
 			deleted_count--;
 
@@ -203,8 +203,16 @@ bool Queue<T>::operator<(const Queue<T>& queue) const
 	T* queue_begin = queue.storage + queue.real_size - queue.deleted_count - 1;
 
 	for (size_t i = 0; i < min_count; i++)
-		if (*(this_begin--) < *(queue_begin--))
-			return true;
+	{
+		T& this_value = *(this_begin--);
+		T& queue_value = *(queue_begin--);
+
+		if (this_value == queue_value)
+			continue;
+
+		return this_value < queue_value;
+	}
+
 
 	return count < queue.count;
 }

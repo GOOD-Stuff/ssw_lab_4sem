@@ -184,13 +184,17 @@ bool Stack<T>::operator<(const Stack<T>& stack) const
 	for (size_t i = max_count - 1; i >= delta_size && i != 0; i--)
 		if (first_is_greater)
 		{
-			if (storage[i] < stack.storage[i - delta_size])
-				return true;
+			if (storage[i] == stack.storage[i - delta_size])
+				continue;
+
+			return storage[i] < stack.storage[i - delta_size];
 		}
 		else
 		{
-			if (storage[i - delta_size] < stack.storage[i])
-				return true;
+			if (storage[i - delta_size] == stack.storage[i])
+				continue;
+			
+			return storage[i - delta_size] < stack.storage[i];
 		}
 
 	return count < stack.count;

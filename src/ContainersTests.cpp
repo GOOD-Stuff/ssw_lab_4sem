@@ -35,14 +35,6 @@ void TestStack()
 	cout << "Stack 1:\n\n" << stack_1 << '\n';
 	cout << "Stack 2:\n\n" << stack_2 << '\n';
 
-	cout << "Top elements after called pop():\n\n";
-
-	stack_1.pop();
-	stack_2.pop();
-
-	cout << "Stack 1 top: " << stack_1.top() << '\n';
-	cout << "Stack 2 top: " << stack_2.top() << "\n\n";
-
 	cout << "Stack 1 == Stack 2: " << BoolToString(stack_1 == stack_2) << '\n';
 	cout << "Stack 1 != Stack 2: " << BoolToString(stack_1 != stack_2) << "\n\n";
 
@@ -51,6 +43,14 @@ void TestStack()
 
 	cout << "Stack 1 <= Stack 2: " << BoolToString(stack_1 <= stack_2) << '\n';
 	cout << "Stack 1 >= Stack 2: " << BoolToString(stack_1 >= stack_2) << "\n\n";
+
+	cout << "Top elements after called pop():\n\n";
+
+	stack_1.pop();
+	stack_2.pop();
+
+	cout << "Stack 1 top: " << stack_1.top() << '\n';
+	cout << "Stack 2 top: " << stack_2.top() << "\n\n";
 }
 
 void TestQueue()
@@ -72,14 +72,6 @@ void TestQueue()
 	cout << "Queue 1:\n\n" << queue_1 << '\n';
 	cout << "Queue 2:\n\n" << queue_2 << '\n';
 
-	cout << "Top elements after called pop():\n\n";
-
-	queue_1.pop();
-	queue_2.pop();
-
-	cout << "Queue 1 top: " << queue_1.begin() << '\n';
-	cout << "Queue 2 top: " << queue_2.begin() << "\n\n";
-
 	cout << "Queue 1 == Queue 2: " << BoolToString(queue_1 == queue_2) << '\n';
 	cout << "Queue 1 != Queue 2: " << BoolToString(queue_1 != queue_2) << "\n\n";
 
@@ -88,6 +80,14 @@ void TestQueue()
 
 	cout << "Queue 1 <= Queue 2: " << BoolToString(queue_1 <= queue_2) << '\n';
 	cout << "Queue 1 >= Queue 2: " << BoolToString(queue_1 >= queue_2) << "\n\n";
+
+	cout << "Top elements after called pop():\n\n";
+
+	queue_1.pop();
+	queue_2.pop();
+
+	cout << "Queue 1 top: " << queue_1.begin() << '\n';
+	cout << "Queue 2 top: " << queue_2.begin() << "\n\n";
 }
 
 void TestVector()
@@ -129,7 +129,6 @@ void TestVector()
 
 	cout << "Vector 1 back after called pop_back(): " << vector_1.back() << '\n';
 	cout << "Vector 2 back after called pop_back(): " << vector_2.back() << "\n\n";
-
 }
 
 #define LINE "*******************************************\n\n"

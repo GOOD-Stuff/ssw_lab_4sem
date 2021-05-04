@@ -424,8 +424,15 @@ bool Vector<T>::operator<(const Vector<T>& vector) const
 	size_t vector_begin = vector.start_index;
 
 	for (size_t i = 0; i < min_count; i++)
-		if (storage[this_begin++] < vector.storage[vector_begin++])
-			return true;
+	{
+		T& this_value = storage[this_begin++];
+		T& vector_value = vector.storage[vector_begin++];
+
+		if (this_value == vector_value)
+			continue;
+
+		return this_value < vector_value;
+	}
 
 	return count < vector.count;
 }
