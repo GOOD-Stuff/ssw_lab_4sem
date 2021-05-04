@@ -147,10 +147,10 @@ bool Vector::operator < (const Vector& right)
 	int result_size = (size < right.size) ? size : right.size;
 
 	for (int i = 0; i < result_size; i++)
-		if (arr_data[i] < right.arr_data[i])
-			return true;
+		if (arr_data[i] != right.arr_data[i])
+			return arr_data[i] < right.arr_data[i];
 		
-	return false;
+	return size < right.size;
 }
 
 bool Vector::operator > (const Vector& right)

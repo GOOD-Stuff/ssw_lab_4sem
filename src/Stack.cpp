@@ -79,10 +79,10 @@ bool Stack::operator < (const Stack& right)
 	int result_size = (size < right.size) ? size : right.size;
 
 	for (int i = 0; i < result_size; i++)
-		if (data_arr[i] < right.data_arr[i])
-			return true;
+		if (data_arr[i] != right.data_arr[i])
+			return data_arr[i] < right.data_arr[i];
 
-	return false;
+	return size < right.size;
 }
 
 bool Stack::operator > (const Stack& right)

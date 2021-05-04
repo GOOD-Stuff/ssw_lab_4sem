@@ -87,13 +87,13 @@ bool Queue::operator < (const Queue& right)
 	{
 		if (size > right.size)
 		{
-			if (memory[i] < right.memory[i - delta_size])
-				return true;
+			if (memory[i] != right.memory[i - delta_size])
+				return memory[i] < right.memory[i - delta_size];
 		}
 		else
 		{
-			if (memory[i - delta_size] < right.memory[i])
-				return true;
+			if (memory[i - delta_size] != right.memory[i])
+				return memory[i - delta_size] < right.memory[i];
 		}
 	}
 
