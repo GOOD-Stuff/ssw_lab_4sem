@@ -1,11 +1,11 @@
 #include <string>
-
+#include <chrono>
+#define CHROMO_TIME std::chrono::steady_clock::time_point
 using namespace std;
 
 class Timer {
     private:
-        unsigned int start_t;
+        CHROMO_TIME start_t = std::chrono::steady_clock::now();
     public:
-        Timer();
         string getTime();
 };

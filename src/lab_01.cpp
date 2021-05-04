@@ -5,24 +5,14 @@
 #include <queue>
 #include <string>
 #include "vector/vector.cpp"
-#include "stack/stack.cpp"
+#include "stack/stack.h"
 #include "queue/queue.cpp"
 #include "timer.h"
 
 using namespace std;
 
-const string line = "*******************************************";
-
-Vector* my_vector;
-vector<int>* std_vector;
 void testVector(int);
-
-Stack<int>* my_stack;
-stack<int>* std_stack;
 void testStack(int);
-
-Queue* my_queue;
-queue<int>* std_queue;
 void testQueue(int);
 
 int rand(int min, int max) {
@@ -36,361 +26,331 @@ string boolToString(bool val)
 
 int main(int argc, char** argv)
 {
-	cout << endl;
-	cout << line << endl;
-	cout << "Тест vector" << endl;
-	cout << endl;
+	cout << "\n";
+	cout << "*******************************************" << "\n";
+	cout << "Тест vector" << "\n";
+	cout << "\n";
 
 	testVector(50);
 
-	delete my_vector;
-	delete std_vector;
-
-	cout << endl;
-	cout << line << endl;
-	cout << "Тест stack" << endl;
-	cout << endl;
+	cout << "\n";
+	cout << "*******************************************" << "\n";
+	cout << "Тест stack" << "\n";
+	cout << "\n";
 
 	testStack(50);
 
-	delete my_stack;
-	delete std_stack;
-
-	cout << endl;
-	cout << line << endl;
-	cout << "Тест queue" << endl;
-	cout << endl;
+	cout << "\n";
+	cout << "*******************************************" << "\n";
+	cout << "Тест queue" << "\n";
+	cout << "\n";
 
 	testQueue(50);
-
-	delete my_queue;
-	delete std_queue;
 
 	return 0;
 }
 
 // TEST QUEUE
-void testQueuePush(int);
-void testQueuePop();
-void testQueueComparisons();
-void testQueueJobFunctions();
+void testQueuePush(int, Queue&, queue<int>&);
+void testQueuePop(Queue&);
+void testQueueComparisons(Queue&, queue<int>&);
+void testQueueJobFunctions(Queue&);
 
 void testQueue(int size) {
-	my_queue = new Queue();
-	std_queue = new queue<int>();
-	cout << "Добавление " << size << " элементов" << endl;
-	testQueuePush(size);
+	Queue my_queue;
+	queue<int> std_queue;
+	cout << "Добавление " << size << " элементов" << "\n";
+	testQueuePush(size, my_queue, std_queue);
 
-	cout << endl;
-	cout << "Выталкивание элемента" << endl;
-	testQueuePop();
+	cout << "\nВыталкивание элемента\n";
+	testQueuePop(my_queue);
 
-	cout << endl;
-	cout << "Операторы сравнения" << endl;
-	testQueueComparisons();
+	cout << "\nОператоры сравнения\n";
+	testQueueComparisons(my_queue, std_queue);
 
-	cout << endl;
-	cout << "Функции из задания" << endl;
-	testQueueJobFunctions();
+	cout << "\nФункции из задания\n";
+	testQueueJobFunctions(my_queue);
 }
 
-void testQueuePush(int size) {
+void testQueuePush(int size, Queue& my_queue, queue<int>& std_queue) {
 	Timer t1;
-	int* arr = new int[size];
 
-	for(int i = 0; i < size; i++) {
-		arr[i] = rand(0, 100);
-		my_queue->push(arr[i]);
-	}
+	for(int i = 0; i < size; i++)
+		my_queue.push(rand(0, 100));
 
-	cout << "Время добавления элементов в my_queue: " << t1.getTime() << endl;
+	cout << "Время добавления элементов в my_queue: " << t1.getTime() << "\n";
 
 	Timer t2;
 
 	for(int i = 0; i < size; i++)
-		std_queue->push(arr[i]);
+		std_queue.push(rand(0, 100));
 
-	cout << "Время добавления элементов в std_queue: " << t2.getTime() << endl;
-	cout << "Итоговый Queue: " << *my_queue << endl;
-
-	delete[] arr;
+	cout << "Время добавления элементов в std_queue: " << t2.getTime() << "\n";
+	cout << "Итоговый Queue: " << my_queue << "\n";
 }
 
-void testQueuePop() {
-	cout << "Элемент my_queue до выталкивания: " << my_queue->peek() << endl;
-	my_queue->pop();
-	cout << "Элемент my_queue после выталкивания: " << my_queue->peek() << endl;
+void testQueuePop(Queue& my_queue) {
+	cout << "Элемент my_queue до выталкивания: " << my_queue.peek() << "\n";
+	my_queue.pop();
+	cout << "Элемент my_queue после выталкивания: " << my_queue.peek() << "\n";
 }
 
-void testQueueComparisons() {
+void testQueueComparisons(Queue& my_queue, queue<int>& std_queue) {
 	Queue my_queue_2;
 	queue<int> std_queue_2;
 
-	for(int i = 0; i < my_queue->count(); i++) {
+	for(int i = 0; i < my_queue.count(); i++) {
 		int num = rand(0, 100);
 		my_queue_2.push(num);
 		std_queue_2.push(num);
 	}
 
-	cout << "Queue для сравнения: " << my_queue_2 << endl;
+	cout << "Queue для сравнения: " << my_queue_2 << "\n";
 
 	Timer t1;
 
-	cout << "Операторы сравнения my_queue:"
-		<< " == " << boolToString((*my_queue) == my_queue_2)
-		<< " != " << boolToString((*my_queue) != my_queue_2)
-		<< " > " << boolToString((*my_queue) > my_queue_2)
-		<< " < " << boolToString((*my_queue) < my_queue_2)
-		<< " <= " << boolToString((*my_queue) <= my_queue_2)
-		<< " >= " << boolToString((*my_queue) >= my_queue_2) << endl;
-	cout << "Время сравнения в my_queue: " << t1.getTime() << endl;
+	cout << "Операторы сравнения my_queue\n"
+		<< "  Оператор '==': " << boolToString(my_queue == my_queue_2) << "\n"
+		<< "  Оператор '!=': " << boolToString(my_queue != my_queue_2) << "\n"
+		<< "  Оператор '>': " << boolToString(my_queue > my_queue_2) << "\n"
+		<< "  Оператор '<': " << boolToString(my_queue < my_queue_2) << "\n"
+		<< "  Оператор '<=': " << boolToString(my_queue <= my_queue_2) << "\n"
+		<< "  Оператор '>=': " << boolToString(my_queue >= my_queue_2) << "\n";
+	cout << "Время сравнения в my_queue: " << t1.getTime() << "\n";
 
 	Timer t2;
 
-	 cout << "Операторы сравнения std_queue:"
-		<< " == " << boolToString((*std_queue) == std_queue_2)
-		<< " != " << boolToString((*std_queue) != std_queue_2)
-		<< " > " << boolToString((*std_queue) > std_queue_2)
-		<< " < " << boolToString((*std_queue) < std_queue_2)
-		<< " <= " << boolToString((*std_queue) <= std_queue_2)
-		<< " >= " << boolToString((*std_queue) >= std_queue_2) << endl;
-	cout << "Время сравнения в std_queue: " << t2.getTime() << endl;
+	 cout << "Операторы сравнения std_queue:\n"
+		<< "  Оператор '==': " << boolToString(std_queue == std_queue_2) << "\n"
+		<< "  Оператор '!=': " << boolToString(std_queue != std_queue_2) << "\n"
+		<< "  Оператор '>': " << boolToString(std_queue > std_queue_2) << "\n"
+		<< "  Оператор '<': " << boolToString(std_queue < std_queue_2) << "\n"
+		<< "  Оператор '<=': " << boolToString(std_queue <= std_queue_2) << "\n"
+		<< "  Оператор '>=': " << boolToString(std_queue >= std_queue_2) << "\n";
+	cout << "Время сравнения в std_queue: " << t2.getTime() << "\n";
 }
 
-void testQueueJobFunctions() {
+void testQueueJobFunctions(Queue& my_queue) {
 	Timer t1;
 
-	cout << "Среднее арифметическое: " << my_queue->get_arithmetic_mean() << endl;
-	cout << "Время выполнения: " << t1.getTime() << endl;
+	cout << "Среднее арифметическое: " << my_queue.get_arithmetic_mean() << "\n";
+	cout << "Время выполнения: " << t1.getTime() << "\n";
 
 	Timer t2;
 
-	cout << "Конкатинация: " << my_queue->concat_sort(*my_queue) << endl;
-	cout << "Время выполнения: " << t2.getTime() << endl;
+	cout << "Конкатинация: " << my_queue.concat_sort(my_queue) << "\n";
+	cout << "Время выполнения: " << t2.getTime() << "\n";
 }
 
 // TEST STACK
-void testStackPush(int);
-void testStackPop();
-void testStackComparisons();
-void testStackJobFunctions();
+void testStackPush(int, Stack<int>&, stack<int>&);
+void testStackPop(Stack<int>&);
+void testStackComparisons(Stack<int>&, stack<int>&);
+void testStackJobFunctions(Stack<int>&);
 
 void testStack(int size) {
-	my_stack = new Stack<int>();
-	std_stack = new stack<int>();
-	cout << "Добавление " << size << " элементов" << endl;
-	testStackPush(size);
+	Stack<int> my_stack;
+	stack<int> std_stack;
+	cout << "Добавление " << size << " элементов\n";
+	testStackPush(size, my_stack, std_stack);
 
-	cout << endl;
-	cout << "Выталкивание элемента" << endl;
-	testStackPop();
+	cout << "\nВыталкивание элемента\n";
+	testStackPop(my_stack);
 
-	cout << endl;
-	cout << "Операторы сравнения" << endl;
-	testStackComparisons();
+	cout << "\nОператоры сравнения\n";
+	testStackComparisons(my_stack, std_stack);
 
-	cout << endl;
-	cout << "Функции из задания" << endl;
-	testStackJobFunctions();
+	cout << "\nФункции из задания\n";
+	testStackJobFunctions(my_stack);
 }
 
-void testStackPush(int size) {
+void testStackPush(int size, Stack<int>& my_stack, stack<int>& std_stack) {
 	Timer t1;
-	int* arr = new int[size];
 
-	for(int i = 0; i < size; i++) {
-		arr[i] = rand(0, 100);
-		my_stack->push(arr[i]);
-	}
+	for(int i = 0; i < size; i++)
+		my_stack.push(rand(0, 100));
 
-	cout << "Время добавления элементов в my_stack: " << t1.getTime() << endl;
+	cout << "Время добавления элементов в my_stack: " << t1.getTime() << "\n";
 
 	Timer t2;
 
 	for(int i = 0; i < size; i++)
-		std_stack->push(arr[i]);
+		std_stack.push(rand(0, 100));
 
-	cout << "Время добавления элементов в std_stack: " << t2.getTime() << endl;
-	cout << "Итоговый Stack: " << *my_stack << endl;
-
-	delete[] arr;
+	cout << "Время добавления элементов в std_stack: " << t2.getTime() << "\n";
+	cout << "Итоговый Stack: " << my_stack << "\n";
 }
 
-void testStackPop() {
-	cout << "Элемент my_stack до выталкивания: " << my_stack->pop() << endl;
-	cout << "Элемент my_stack после выталкивания: " << my_stack->peek() << endl;
+void testStackPop(Stack<int>& my_stack) {
+	cout << "Элемент my_stack до выталкивания: " << my_stack.pop() << "\n";
+	cout << "Элемент my_stack после выталкивания: " << my_stack.peek() << "\n";
 }
 
-void testStackComparisons() {
+void testStackComparisons(Stack<int>& my_stack, stack<int>& std_stack) {
 	Stack<int> my_stack_2;
 	stack<int> std_stack_2;
 
-	for(int i = 0; i < my_stack->count(); i++) {
+	for(int i = 0; i < my_stack.count(); i++) {
 		int num = rand(0, 100);
 		my_stack_2.push(num);
 		std_stack_2.push(num);
 	}
 
-	cout << "Stack для сравнения: " << my_stack_2 << endl;
+	cout << "Stack для сравнения: " << my_stack_2 << "\n";
 	Timer t1;
 
 	cout << "Операторы сравнения my_stack:"
-		<< " == " << boolToString((*my_stack) == my_stack_2)
-		<< " != " << boolToString((*my_stack) != my_stack_2)
-		<< " > " << boolToString((*my_stack) > my_stack_2)
-		<< " < " << boolToString((*my_stack) < my_stack_2)
-		<< " <= " << boolToString((*my_stack) <= my_stack_2)
-		<< " >= " << boolToString((*my_stack) >= my_stack_2) << endl;
-	cout << "Время сравнения в my_stack: " << t1.getTime() << endl;
+		<< "  Оператор '==': " << boolToString(my_stack == my_stack_2) << "\n"
+		<< "  Оператор '!=': " << boolToString(my_stack != my_stack_2) << "\n"
+		<< "  Оператор '>': " << boolToString(my_stack > my_stack_2) << "\n"
+		<< "  Оператор '<': " << boolToString(my_stack < my_stack_2) << "\n"
+		<< "  Оператор '<=': " << boolToString(my_stack <= my_stack_2) << "\n"
+		<< "  Оператор '>=': " << boolToString(my_stack >= my_stack_2) << "\n";
+	cout << "Время сравнения в my_stack: " << t1.getTime() << "\n";
 
 	Timer t2;
 
 	 cout << "Операторы сравнения std_stack:"
-		<< " == " << boolToString((*std_stack) == std_stack_2)
-		<< " != " << boolToString((*std_stack) != std_stack_2)
-		<< " > " << boolToString((*std_stack) > std_stack_2)
-		<< " < " << boolToString((*std_stack) < std_stack_2)
-		<< " <= " << boolToString((*std_stack) <= std_stack_2)
-		<< " >= " << boolToString((*std_stack) >= std_stack_2) << endl;
-	cout << "Время сравнения в std_stack: " << t2.getTime() << endl;
+		<< "  Оператор '==': " << boolToString(std_stack == std_stack_2) << "\n"
+		<< "  Оператор '!=': " << boolToString(std_stack != std_stack_2) << "\n"
+		<< "  Оператор '>': " << boolToString(std_stack > std_stack_2) << "\n"
+		<< "  Оператор '<': " << boolToString(std_stack < std_stack_2) << "\n"
+		<< "  Оператор '<=': " << boolToString(std_stack <= std_stack_2) << "\n"
+		<< "  Оператор '>=': " << boolToString(std_stack >= std_stack_2) << "\n";
+	cout << "Время сравнения в std_stack: " << t2.getTime() << "\n";
 
 }
 
-void testStackJobFunctions() {
+void testStackJobFunctions(Stack<int>& my_stack) {
 	Timer t1;
 
-	cout << "Среднее арифметическое: " << my_stack->getAverage() << endl;
-	cout << "Время выполнения: " << t1.getTime() << endl;
+	cout << "Среднее арифметическое: " << my_stack.getAverage() << "\n";
+	cout << "Время выполнения: " << t1.getTime() << "\n";
 
 	Timer t2;
 
-	cout << "Конкатинация: " << my_stack->concat(*my_stack) << endl;
-	cout << "Время выполнения: " << t2.getTime() << endl;
+	cout << "Конкатинация: " << my_stack.concat(my_stack) << "\n";
+	cout << "Время выполнения: " << t2.getTime() << "\n";
 }
 
 // TEST VECTOR
-void testVectorPush(int);
-void testVectorAt(int);
-void testVectorPop();
-void testVectorComparisons();
-void testVectorAllPop();
-void testVectorJobFunctions();
+void testVectorPush(int, Vector&, vector<int>&);
+void testVectorAt(int, Vector& my_vector);
+void testVectorPop(Vector& my_vector);
+void testVectorComparisons(Vector& my_vector, vector<int>& std_vector);
+void testVectorAllPop(Vector& my_vector, vector<int>& std_vector);
+void testVectorJobFunctions(Vector& my_vector);
 
 void testVector(int size) {
-	my_vector = new Vector();
-	std_vector = new vector<int>();
-	cout << "Добавление " << size << " элементов" << endl;
-	testVectorPush(size);
+	Vector my_vector;
+	vector<int> std_vector;
+	cout << "Добавление " << size << " элементов\n";
+	testVectorPush(size, my_vector, std_vector);
 
-	cout << endl;
-	cout << "Доступ к " << size / 2 << " элементу" << endl;
-	testVectorAt(size / 2);
+	cout << "\nДоступ к " << size / 2 << " элементу\n";
+	testVectorAt(size / 2, my_vector);
 
-	cout << endl;
-	cout << "Выталкивание элемента" << endl;
-	testVectorPop();
+	cout << "\nВыталкивание элемента\n";
+	testVectorPop(my_vector);
 
-	cout << endl;
-	cout << "Операторы сравнения" << endl;
-	testVectorComparisons();
+	cout << "\nОператоры сравнения\n";
+	testVectorComparisons(my_vector, std_vector);
 
-	cout << endl;
-	cout << "Функции из задания" << endl;
-	testVectorJobFunctions();
+	cout << "\nФункции из задания\n";
+	testVectorJobFunctions(my_vector);
 
-	cout << endl;
-	cout << "Выталкивание всех элементов" << endl;
-	testVectorAllPop();
+	cout << "\nВыталкивание всех элементов\n";
+	testVectorAllPop(my_vector, std_vector);
 }
 
-void testVectorPush(int size) {
+void testVectorPush(int size, Vector& my_vector, vector<int>& std_vector) {
 	Timer t1;
 
 	for(int i = 0; i < size; i++)
-		my_vector->push_back(rand(0, 100));
+		my_vector.push_back(rand(0, 100));
 
-	cout << "Время добавления элементов в my_vector: " << t1.getTime() << endl;
+	cout << "Время добавления элементов в my_vector: " << t1.getTime() << "\n";
 
 	Timer t2;
 
 	for(int i = 0; i < size; i++)
-		std_vector->push_back(my_vector->at(i));
+		std_vector.push_back(my_vector.at(i));
 
-	cout << "Время добавления элементов в std_vector: " << t2.getTime() << endl;
-	cout << "Итоговый вектор: " << *my_vector << endl;
+	cout << "Время добавления элементов в std_vector: " << t2.getTime() << "\n";
+	cout << "Итоговый вектор: " << my_vector << "\n";
 }
 
-void testVectorAt(int index) {
-	cout << "Элемент my_vector: " << my_vector->at(index) << endl;
+void testVectorAt(int index, Vector& my_vector) {
+	cout << "Элемент my_vector: " << my_vector.at(index) << "\n";
 }
 
-void testVectorPop() {
-	cout << "Элемент my_vector до выталкивания: " << my_vector->at(my_vector->count() - 1) << endl;
-	my_vector->pop_back();
-	cout << "Элемент my_vector после выталкивания: " << my_vector->at(my_vector->count() - 1) << endl;
+void testVectorPop(Vector& my_vector) {
+	cout << "Элемент my_vector до выталкивания: " << my_vector.at(my_vector.count() - 1) << "\n";
+	my_vector.pop_back();
+	cout << "Элемент my_vector после выталкивания: " << my_vector.at(my_vector.count() - 1) << "\n";
 }
 
-void testVectorComparisons() {
+void testVectorComparisons(Vector& my_vector, vector<int>& std_vector) {
 	Vector my_vector_2;
 	vector<int> std_vector_2;
 
-	for(int i = 0; i < my_vector->count(); i++) {
+	for(int i = 0; i < my_vector.count(); i++) {
 		int num = rand(0, 100);
 		my_vector_2.push_back(num);
 		std_vector_2.push_back(num);
 	}
 
-	cout << "Вектор для сравнения: " << my_vector_2 << endl;
+	cout << "Вектор для сравнения: " << my_vector_2 << "\n";
 
 	Timer t1;
 
 	cout << "Операторы сравнения my_vector:"
-		<< " == " << boolToString((*my_vector) == my_vector_2)
-		<< " != " << boolToString((*my_vector) != my_vector_2)
-		<< " > " << boolToString((*my_vector) > my_vector_2)
-		<< " < " << boolToString((*my_vector) < my_vector_2)
-		<< " <= " << boolToString((*my_vector) <= my_vector_2)
-		<< " >= " << boolToString((*my_vector) >= my_vector_2) << endl;
-	cout << "Время сравнения в my_vector: " << t1.getTime() << endl;
+		<< "  Оператор '==': " << boolToString(my_vector == my_vector_2) << "\n"
+		<< "  Оператор '!=': " << boolToString(my_vector != my_vector_2) << "\n"
+		<< "  Оператор '>': " << boolToString(my_vector > my_vector_2) << "\n"
+		<< "  Оператор '<': " << boolToString(my_vector < my_vector_2) << "\n"
+		<< "  Оператор '<=': " << boolToString(my_vector <= my_vector_2) << "\n"
+		<< "  Оператор '>=': " << boolToString(my_vector >= my_vector_2) << "\n";
+	cout << "Время сравнения в my_vector: " << t1.getTime() << "\n";
 
 	Timer t2;
 
 	 cout << "Операторы сравнения std_vector:"
-		<< " == " << boolToString((*std_vector) == std_vector_2)
-		<< " != " << boolToString((*std_vector) != std_vector_2)
-		<< " > " << boolToString((*std_vector) > std_vector_2)
-		<< " < " << boolToString((*std_vector) < std_vector_2)
-		<< " <= " << boolToString((*std_vector) <= std_vector_2)
-		<< " >= " << boolToString((*std_vector) >= std_vector_2) << endl;
-	cout << "Время сравнения в std_vector: " << t2.getTime() << endl;
+		<< "  Оператор '==': " << boolToString(std_vector == std_vector_2) << "\n"
+		<< "  Оператор '!=': " << boolToString(std_vector != std_vector_2) << "\n"
+		<< "  Оператор '>': " << boolToString(std_vector > std_vector_2) << "\n"
+		<< "  Оператор '<': " << boolToString(std_vector < std_vector_2) << "\n"
+		<< "  Оператор '<=': " << boolToString(std_vector <= std_vector_2) << "\n"
+		<< "  Оператор '>=': " << boolToString(std_vector >= std_vector_2) << "\n";
+	cout << "Время сравнения в std_vector: " << t2.getTime() << "\n";
 
 }
 
-void testVectorAllPop() {
+void testVectorAllPop(Vector& my_vector, vector<int>& std_vector) {
 	Timer t1;
 
-	int size = my_vector->count();
+	int size = my_vector.count();
 	for(int i = 0; i < size; i++)
-		my_vector->pop_back();
+		my_vector.pop_back();
 
-	cout << "Время выталкивания всех элементов в my_vector: " << t1.getTime() << endl;
+	cout << "Время выталкивания всех элементов в my_vector: " << t1.getTime() << "\n";
 
 	Timer t2;
 
 	for(int i = 0; i < size; i++)
-		std_vector->pop_back();
+		std_vector.pop_back();
 
-	cout << "Время выталкивания всех элементов в std_vector: " << t2.getTime() << endl;
+	cout << "Время выталкивания всех элементов в std_vector: " << t2.getTime() << "\n";
 }
 
-void testVectorJobFunctions() {
+void testVectorJobFunctions(Vector& my_vector) {
 	Timer t1;
 
-	cout << "Среднее арифметическое: " << my_vector->get_arithmetic_mean() << endl;
-	cout << "Время выполнения: " << t1.getTime() << endl;
+	cout << "Среднее арифметическое: " << my_vector.get_arithmetic_mean() << "\n";
+	cout << "Время выполнения: " << t1.getTime() << "\n";
 
 	Timer t2;
 
-	cout << "Конкатинация: " << my_vector->concat_sort(*my_vector) << endl;
-	cout << "Время выполнения: " << t2.getTime() << endl;
+	cout << "Конкатинация: " << my_vector.concat_sort(my_vector) << "\n";
+	cout << "Время выполнения: " << t2.getTime() << "\n";
 }
