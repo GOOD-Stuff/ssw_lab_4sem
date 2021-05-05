@@ -1,0 +1,7 @@
+/home/nikita/labs/ssw_lab_4sem/build/CMakeFiles/edit_cache.dir
+/home/nikita/labs/ssw_lab_4sem/build/CMakeFiles/lab_01.dir
+/home/nikita/labs/ssw_lab_4sem/build/CMakeFiles/rebuild_cache.dir
+/home/nikita/labs/ssw_lab_4sem/build/CMakeFiles/timer.dir
+/home/nikita/labs/ssw_lab_4sem/build/CMakeFiles/stack.dir
+/home/nikita/labs/ssw_lab_4sem/build/CMakeFiles/queue.dir
+/home/nikita/labs/ssw_lab_4sem/build/CMakeFiles/vector.dir

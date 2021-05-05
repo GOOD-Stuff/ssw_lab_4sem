@@ -1,0 +1,1 @@
+/home/linuxbrew/.linuxbrew/bin/g++-5  -g   CMakeFiles/lab_01.dir/src/lab_01.cpp.o  -o lab_01  libvector.a libqueue.a libstack.a libtimer.a 

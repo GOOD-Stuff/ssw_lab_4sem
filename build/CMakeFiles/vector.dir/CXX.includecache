@@ -1,0 +1,16 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/nikita/labs/ssw_lab_4sem/src/vector/vector.cpp
+vector.h
+/home/nikita/labs/ssw_lab_4sem/src/vector/vector.h
+
+/home/nikita/labs/ssw_lab_4sem/src/vector/vector.h
+ostream
+-
+

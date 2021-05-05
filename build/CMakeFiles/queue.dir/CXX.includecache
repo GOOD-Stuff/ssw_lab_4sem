@@ -1,0 +1,16 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/nikita/labs/ssw_lab_4sem/src/queue/queue.cpp
+queue.h
+/home/nikita/labs/ssw_lab_4sem/src/queue/queue.h
+
+/home/nikita/labs/ssw_lab_4sem/src/queue/queue.h
+ostream
+-
+

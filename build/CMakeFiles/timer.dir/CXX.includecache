@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/nikita/labs/ssw_lab_4sem/src/timer.cpp
+ctime
+-
+timer.h
+/home/nikita/labs/ssw_lab_4sem/src/timer.h
+iostream
+-
+
+/home/nikita/labs/ssw_lab_4sem/src/timer.h
+string
+-
+
