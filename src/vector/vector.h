@@ -8,18 +8,24 @@ class Vector
 private:
 	int* arr;		// Pointer to an array with vector data
 	int size;       // Number of elements in a vector
+    int head;
 
 public:
     /**
     * @brief Vector constructor
     */
 	Vector();
-	
+
+    /**
+    * @brief Vector constructor
+    */
+	Vector(int);
+
 	/**
     * @brief Vector copy constructor
     */
 	Vector(const Vector& vector);
-	
+
 	/**
     * @brief Vector destructor
     */
@@ -32,39 +38,11 @@ public:
 	* @param int Element to write
     */
 	void push_back(int value);
-	
-	
-	/**
-    * @brief Add element to front
-	*
-	* @param int Element to write
-    */
-	void push_front(int value);
-	
-	/**
-    * @brief Insert element by index
-	*
-	* @param int Element to write
-	* @param int Position index
-    */
-	void insert(int value, int index);
 
 	/**
     * @brief Delete last element
     */
 	void pop_back();
-
-	/**
-    * @brief Delete front element
-    */
-	void pop_front();
-
-	/**
-    * @brief Delete element by index
-	*
-	* @param int Position index
-    */
-	void erase(int index);
 
 	/**
     * @brief Get number of items on vector
@@ -80,7 +58,7 @@ public:
     * @return int& Reference to an element with a specified index
     */
 	int& at(int index);
-	
+
 	/**
     * @brief Getting the arithmetic average
     *
@@ -95,11 +73,11 @@ public:
     * @return Vector New converted vector
     */
 	Vector concat_sort(const Vector& vector);
-	
-	
+
+
 	/**
     * @brief Assignment operator
-    * 
+    *
 	* @param Vector& Vector from which we will copy
     * @return Vector& Current vector
     */
