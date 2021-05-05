@@ -198,26 +198,14 @@ template <typename T>
 bool Stack<T>::operator<(const Stack<T>& stack) const
 {
 	size_t min_count = count < stack.count ? count : stack.count;
-	size_t max_count = count > stack.count ? count : stack.count;
-	size_t delta_size = max_count - min_count;
 
-	bool first_is_greater = count > stack.count;
+	for (size_t i = 0; i < min_count; i++)
+	{
+		if (storage[i] == stack.storage[i])
+			continue;
 
-	for (size_t i = max_count - 1; i >= delta_size && i != 0; i--)
-		if (first_is_greater)
-		{
-			if (storage[i] == stack.storage[i - delta_size])
-				continue;
-
-			return storage[i] < stack.storage[i - delta_size];
-		}
-		else
-		{
-			if (storage[i - delta_size] == stack.storage[i])
-				continue;
-			
-			return storage[i - delta_size] < stack.storage[i];
-		}
+		return storage[i] < stack.storage[i];
+	}
 
 	return count < stack.count;
 }
