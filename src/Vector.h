@@ -14,12 +14,15 @@ private:
 	size_t end_index;   // End vector index
 	size_t real_size;   // Real vector size (capacity)
 
-	static constexpr size_t reserve = 1024; // Reserve cells count (half - left, half - right)
+	static constexpr size_t reserve = 16384; // Reserve cells count (half - left, half - right)
 
 private:
 	void delete_storage();									   // Clear memory allocated for vector
 	void replace_storage(T*& new_data);						   // Replace vector storage 
 	void throw_if(bool expression, const char* message) const; // For exceptions
+
+	void push_front(T value); // Insert element to front
+	void pop_front();         // Remove first element
 
 public:
 	Vector();
@@ -29,11 +32,9 @@ public:
 	T& back();           // Get last element
 	T& at(size_t index); // Get item by index
 
-	void push_front(T value);           // Insert element to front
 	void push_back(T value);            // Insert element to back
 	void insert(size_t index, T value); // Insert element by index
 
-	void pop_front(); // Remove first element
 	void pop_back();  // Remove last element
 
 	void erase(size_t index);                     // Remove element by index
@@ -62,6 +63,10 @@ public:
 	bool operator>=(const Vector<T>& vector) const;
 
 	// Lexicographic comparison operators end
+
+	// Noncopyable
+	Vector(const Vector& stack) = delete;
+	Vector& operator=(const Vector& vector) = delete;
 
 	// Operator for output all vector elements
 	friend std::ostream& operator<<(std::ostream& out, const Vector<T>& vector)
@@ -172,7 +177,7 @@ void Vector<T>::push_back(T value)
 template <typename T>
 void Vector<T>::insert(size_t index, T value)
 {
-	throw_if(index >= count, "Attempt to go beyond the boundaries of vector!");
+	throw_if(index > count, "Attempt to go beyond the boundaries of vector!");
 
 	if (start_index + index == 0)
 	{

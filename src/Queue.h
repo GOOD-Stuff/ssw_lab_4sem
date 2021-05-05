@@ -12,7 +12,7 @@ private:
 
 	size_t deleted_count; // Number that determines when to clear unused memory
 	size_t real_size;     // Real queue size (capacity)
-	static constexpr size_t reserve = 1024; // Reserve cells count
+	static constexpr size_t reserve = 8192; // Reserve cells count
 
 private:
 	void delete_storage();                          // Clear memory allocated for the queue
@@ -26,7 +26,7 @@ public:
 	void push(T value); // Add element
 	void pop();         // Delete element
 
-	T& begin(); // Get begin element
+	T& back(); // Get back element
 
 	void erase_in_vrange(T start_value, T end_value); // Remove elements in values range
 	void reverse(); // Reverse order of elements
@@ -130,10 +130,10 @@ void Queue<T>::pop()
 }
 
 template <typename T>
-T& Queue<T>::begin()
+T& Queue<T>::back()
 {
-	throw_if_empty("You are trying to access begin of empty queue!");
-	return storage[real_size - deleted_count - 1];
+	throw_if_empty("You are trying to access back of empty queue!");
+	return storage[real_size - deleted_count - count];
 }
 
 template <typename T>
