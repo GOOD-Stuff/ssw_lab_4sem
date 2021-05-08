@@ -29,6 +29,7 @@ public:
 	ForwardList() = default;
 	ForwardList(const std::initializer_list<T>& list);
 	ForwardList(const ForwardList<T>& list) { *this = list; }
+	ForwardList(ForwardList<T>&& list) noexcept { *this = std::move(list); }
 
 	~ForwardList() { clear(); }
 
@@ -52,6 +53,7 @@ public:
 	std::pair<T, T> clear_min_max();
 
 	ForwardList<T>& operator = (const ForwardList<T>& list);
+	ForwardList<T>& operator = (ForwardList<T>&& list);
 
 	bool operator == (const ForwardList<T>& list);
 	bool operator != (const ForwardList<T>& list);
@@ -81,7 +83,7 @@ public:
 
 	public:
 		Iterator() = default;
-		Iterator(Node * p) : ptr(p) {}
+		Iterator(Node* p) : ptr(p) {}
 
 		Iterator operator ++ ()
 		{
@@ -108,7 +110,7 @@ public:
 
 			for (size_t i = 0; i < offset; i++)
 				++it;
-			
+
 			return it;
 		}
 
@@ -293,7 +295,7 @@ std::pair<T, T> ForwardList<T>::clear_min_max()
 	}
 
 	delete_found_element();
-	
+
 	return { min, max };
 }
 
@@ -307,6 +309,23 @@ ForwardList<T>& ForwardList<T>::operator = (const ForwardList<T>& list)
 
 	for (auto it = list.begin(); it != list.end(); ++it)
 		push_back(*it);
+
+	return *this;
+}
+
+template <typename T>
+ForwardList<T>& ForwardList<T>::operator = (ForwardList<T>&& list)
+{
+	if (&list == this)
+		return *this;
+
+	clear();
+
+	head = list.head;
+	count = list.count;
+
+	list.head = nullptr;
+	list.count = 0;
 
 	return *this;
 }
