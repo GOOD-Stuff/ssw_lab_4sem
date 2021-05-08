@@ -7,20 +7,20 @@ template <typename T>
 class Stack
 {
 private:
-	T* storage;	  // Pointer to array with stack data
-	size_t count; // Count of elements in the stack
+	T* storage {nullptr}; // Pointer to array with stack data
+	size_t count {0};     // Count of elements in the stack
 
-	size_t real_size; // Real stack size (capacity)
-	static constexpr size_t reserve = 8192; // Reserve cells count
+	size_t real_size {0}; // Real stack size (capacity)
+	static constexpr size_t reserve {8192}; // Reserve cells count
 
-private:
+
 	void delete_storage();                          // Clear memory allocated for the stack
 	void replace_storage(T*& new_storage);		    // Replace stack storage 
 	void throw_if_empty(const char* message) const; // For exceptions when working with empty stack
 
 public:
-	Stack();  // Constructor
-	~Stack(); // Destructor
+	Stack() = default;
+	~Stack();
 
 	void push(T value); // Add element
 	void pop();         // Delete element
@@ -62,14 +62,6 @@ public:
 	Stack(const Stack& stack) = delete;
 	Stack& operator=(const Stack& stack) = delete;
 };
-
-template <typename T>
-Stack<T>::Stack()
-{
-	storage = nullptr;
-	count = 0;
-	real_size = 0;
-}
 
 template <typename T>
 Stack<T>::~Stack()

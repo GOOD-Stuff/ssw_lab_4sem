@@ -7,16 +7,16 @@ template <typename T>
 class Vector
 {
 private:
-	T* storage;   // Pointer to array with vector data
-	size_t count; // Count of elements in the vector;
+	T* storage {nullptr};   // Pointer to array with vector data
+	size_t count {0};       // Count of elements in the vector;
 
-	size_t start_index; // Start vector index
-	size_t end_index;   // End vector index
-	size_t real_size;   // Real vector size (capacity)
+	size_t start_index {0}; // Start vector index
+	size_t end_index {0};   // End vector index
+	size_t real_size {0};   // Real vector size (capacity)
 
-	static constexpr size_t reserve = 16384; // Reserve cells count (half - left, half - right)
+	static constexpr size_t reserve {16384}; // Reserve cells count (half - left, half - right)
 
-private:
+
 	void delete_storage();									   // Clear memory allocated for vector
 	void replace_storage(T*& new_data);						   // Replace vector storage 
 	void throw_if(bool expression, const char* message) const; // For exceptions
@@ -25,7 +25,7 @@ private:
 	void pop_front();         // Remove first element
 
 public:
-	Vector();
+	Vector() = default;
 	~Vector();
 
 	T& front();          // Get first element
@@ -79,17 +79,6 @@ public:
 		return out;
 	}
 };
-
-template <typename T>
-Vector<T>::Vector()
-{
-	storage = nullptr;
-
-	count = 0;
-	real_size = 0;
-	start_index = 0;
-	end_index = 0;
-}
 
 template <typename T>
 Vector<T>::~Vector()

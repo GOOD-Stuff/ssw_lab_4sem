@@ -7,21 +7,21 @@ template <typename T>
 class Queue
 {
 private:
-	T* storage;	  // Pointer to array with queue data
-	size_t count; // Count of elements in the queue
+	T* storage {nullptr}; // Pointer to array with queue data
+	size_t count {0};     // Count of elements in the queue
 
-	size_t deleted_count; // Number that determines when to clear unused memory
-	size_t real_size;     // Real queue size (capacity)
-	static constexpr size_t reserve = 8192; // Reserve cells count
+	size_t deleted_count {0}; // Number that determines when to clear unused memory
+	size_t real_size {0};     // Real queue size (capacity)
+	static constexpr size_t reserve {8192}; // Reserve cells count
 
-private:
+
 	void delete_storage();                          // Clear memory allocated for the queue
 	void replace_storage(T*& new_storage);		    // Replace queue storage 
 	void throw_if_empty(const char* message) const; // For exceptions when working with empty queue
 
 public:
-	Queue();  // Constructor
-	~Queue(); // Destructor
+	Queue() = default;
+	~Queue();
 
 	void push(T value); // Add element
 	void pop();         // Delete element
@@ -67,15 +67,6 @@ public:
 	Queue(const Queue& queue) = delete;
 	Queue& operator=(const Queue& queue) = delete;
 };
-
-template <typename T>
-Queue<T>::Queue()
-{
-	storage = nullptr;
-	count = 0;
-	real_size = 0;
-	deleted_count = 0;
-}
 
 template <typename T>
 Queue<T>::~Queue()
