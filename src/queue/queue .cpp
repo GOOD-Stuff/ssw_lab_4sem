@@ -1,5 +1,4 @@
 #include "queue.h"
-#define ADDITION 256
 
 Queue::Queue()
 {
@@ -140,9 +139,7 @@ bool Queue::operator == (const Queue& queue)
         return false;
     }
 
-    int min_size = size < queue.size ? size : queue.size;
-
-    for (int i = 0; i < min_size; i++) {
+    for (int i = 0; i < size; i++) {
         if (data[start_index + i] != queue.data[queue.start_index + i]) {
             return false;
         }

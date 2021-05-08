@@ -7,14 +7,15 @@ using std::ostream;
 class Queue
 {
 private:
-	int* data;
-	int size;
-	int start_index;
+	int* data {};
+	int size {};
+	int start_index {};
+
+	static constexpr int ADDITION {256};
 
 public:
 	Queue();
 	Queue(const Queue& queue);
-	Queue(int size);
 	~Queue();
 
 	void push(int value);
@@ -37,7 +38,7 @@ public:
 	bool operator <= (const Queue& queue);
 	bool operator >= (const Queue& queue);
 
-	friend ostream& operator << (ostream& stream, const Queue& queue);
+	friend ostream& operator << (ostream& stream, Queue& queue);
 };
 
 #endif
