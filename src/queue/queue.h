@@ -16,7 +16,7 @@ private:
 
 public:
 	Queue();
-	Queue(int size);
+	explicit Queue(int size);
 	~Queue();
 
 	void push(T value);
