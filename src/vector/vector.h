@@ -7,81 +7,24 @@ template <typename T>
 class Vector
 {
 private:
-	/**
-	* @brief Array for storing stack elements
-	*/
-	T* arr;
-
-	/**
-	* @brief Stack size
-	*/
-	int size;
-
-	/**
-	* @brief Cell reserve that is added on overflow
-	*/
-	static constexpr int ADDITION = 4096;
+	T* arr {nullptr};
+	static constexpr int ADDITION {4096};
+	int size {ADDITION};
 
 public:
 
-	/**
-	* @brief Vector constructor
-	*/
 	Vector();
-
-	/**
-	* @brief Copy constructor
-	*/
 	Vector(const Vector<T>& vector);
-
-	/**
-	* @brief Deconstructor
-	*/
 	~Vector();
-
-	/**
-	* @brief Add item to the end
-	*/
 	void push_back(T data);
-
-	/**
-	* @brief Delete the last item
-	*/
 	void pop_back();
-
-	/**
-	* @brief Get a reference to an element by its index
-	*/
 	T& at(int index);
-
-	/**
-	* @brief To find out the number of elements in a vector
-	*/
 	int count() const;
-
-	/**
-	* @brief Clear vector
-	*/
 	void clear();
-
-	/**
-	* @brief Arithmetic mean of all elements
-	*/
 	float get_arithmetic_mean();
-
-	/**
-	* @brief Sorted concatenation with another vector
-	*/
 	Vector concat_sort(const Vector& vector);
 
-	/**
-	* @brief Assignment operator
-	*/
 	Vector& operator = (const Vector& vector);
-
-	/**
-	* @brief  Comparison operators
-	*/
 	bool operator == (const Vector<T>& vector) const;
 	bool operator != (const Vector<T>& vector) const;
 	bool operator < (const Vector<T>& vector) const;
@@ -89,14 +32,11 @@ public:
 	bool operator <= (const Vector<T>& vector) const;
 	bool operator >= (const Vector<T>& vector) const;
 
-	/**
-	* @brief Output operator
-	*/
 	friend std::ostream& operator << (std::ostream& stream, const Vector& vector)
 	{
 		for (int i = 0; i < vector.size; i++)
 		{
-			stream << vector.arr[i] << "\n";
+			stream << vector.arr[i] << " ";
 		}
 
 		return stream;
@@ -110,6 +50,9 @@ Vector<T>::Vector()
 	size = 0;
 }
 
+/**
+* @brief Copy constructor
+*/
 template <typename T>
 Vector<T>::Vector(const Vector<T>& vector)
 {
@@ -122,6 +65,9 @@ Vector<T>::~Vector()
 	clear();
 }
 
+/**
+* @brief Add item to the end
+*/
 template <typename T>
 void Vector<T>::push_back(T data)
 {
@@ -151,6 +97,9 @@ void Vector<T>::push_back(T data)
 	size++;
 }
 
+/**
+* @brief Delete the last item
+*/
 template <typename T>
 void Vector<T>::pop_back()
 {
@@ -179,6 +128,9 @@ void Vector<T>::pop_back()
 	}
 }
 
+/**
+* @brief Get a reference to an element by its index
+*/
 template <typename T>
 T& Vector<T>::at(int index)
 {
@@ -195,12 +147,18 @@ T& Vector<T>::at(int index)
 	return arr[index];
 }
 
+/**
+* @brief To find out the number of elements in a vector
+*/
 template <typename T>
 int Vector<T>::count() const
 {
 	return size;
 }
 
+/**
+* @brief Clear vector
+*/
 template <typename T>
 void Vector<T>::clear()
 {
@@ -212,6 +170,9 @@ void Vector<T>::clear()
 	}
 }
 
+/**
+* @brief Arithmetic mean of all elements
+*/
 template <typename T>
 float Vector<T>::get_arithmetic_mean()
 {
@@ -230,6 +191,9 @@ float Vector<T>::get_arithmetic_mean()
 	return result / size;
 }
 
+/**
+* @brief Sorted concatenation with another vector
+*/
 template <typename T>
 Vector<T> Vector<T>::concat_sort(const Vector<T>& vector)
 {
