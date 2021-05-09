@@ -50,7 +50,7 @@ public:
 	// Add item to back
 	void push_back(T value);
 
-	// Insert element in any position of container
+	// Insert element in any position of container (AFTER *it!)
 	void insert(const Iterator& it, T value);
 
 	// Remove first element
@@ -59,7 +59,7 @@ public:
 	// Remove last element
 	void pop_back();
 
-	// Remove element from any position of container
+	// Remove element from any position of container (AFTER *it!)
 	void erase(const Iterator& it);
 
 	// Get iterator to begin list
