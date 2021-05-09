@@ -165,8 +165,6 @@ public:
 	};
 };
 
-#endif
-
 template <typename T>
 ForwardList<T>::ForwardList(const std::initializer_list<T>& list)
 {
@@ -452,3 +450,5 @@ void ForwardList<T>::throw_if(bool condition, const char* message)
 	if (condition)
 		throw std::runtime_error(message);
 }
+
+#endif
