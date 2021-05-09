@@ -1,6 +1,7 @@
 #ifndef CLASS_FORWARD_LIST_H
 #define CLASS_FORWARD_LIST_H
 
+#include <stdexcept>
 #include <ostream>
 
 template <typename T>
@@ -17,11 +18,11 @@ public:
 		Node(T value) : data(value) {}
 
 		T data;
-		Node* next{};
+		Node* next {nullptr};
 	};
 
-	size_t count{};
-	Node* head{};
+	size_t count {0};
+	Node* head {nullptr};
 
 public:
 	class Iterator;
@@ -50,6 +51,8 @@ public:
 	void clear();
 
 	static ForwardList<T> merge_and_sort(const ForwardList<T>& list_1, const ForwardList<T>& list_2);
+	ForwardList<T> merge_and_sort(const ForwardList<T>& list);
+
 	std::pair<T, T> clear_min_max();
 
 	ForwardList<T>& operator = (const ForwardList<T>& list);
@@ -75,7 +78,7 @@ public:
 	class Iterator
 	{
 	private:
-		Node* ptr{};
+		Node* ptr {nullptr};
 
 	private:
 		friend class ForwardList<T>;
@@ -85,12 +88,12 @@ public:
 		Iterator() = default;
 		Iterator(Node* p) : ptr(p) {}
 
-		Iterator operator ++ ()
+		Iterator& operator ++ ()
 		{
 			throw_if(ptr == nullptr, "Trying to work with empty pointer!");
 
 			ptr = ptr->next;
-			return ptr;
+			return *this;
 		}
 
 		Iterator operator ++ (int)
@@ -250,6 +253,12 @@ ForwardList<T> ForwardList<T>::merge_and_sort(const ForwardList<T>& list_1, cons
 }
 
 template <typename T>
+ForwardList<T> ForwardList<T>::merge_and_sort(const ForwardList<T>& list)
+{
+	return merge_and_sort(*this, list);
+}
+
+template <typename T>
 std::pair<T, T> ForwardList<T>::clear_min_max()
 {
 	throw_if(count < 2, "The number of items in list must be at least 2!");
@@ -342,7 +351,7 @@ bool ForwardList<T>::operator == (const ForwardList<T>& list)
 	auto this_begin = begin();
 	auto list_begin = list.begin();
 
-	for (size_t i = 0; i < count; i++)
+	while (this_begin != end() && list_begin != list.end())
 		if (*(this_begin++) != *(list_begin++))
 			return false;
 
