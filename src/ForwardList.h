@@ -101,6 +101,8 @@ public:
 	// Output operator
 	friend std::ostream& operator << (std::ostream& out, const ForwardList<T>& list)
 	{
+		throw_if(size == 0, "Attempt to display empty list!");
+
 		for (auto it = list.begin(); it != list.end(); ++it)
 			out << *it << "\n";
 
