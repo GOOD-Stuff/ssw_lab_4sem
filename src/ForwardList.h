@@ -98,16 +98,6 @@ public:
 	bool operator <= (const ForwardList<T>& list);
 	bool operator >= (const ForwardList<T>& list);
 
-	// Output operator
-	friend std::ostream& operator << (std::ostream& out, const ForwardList<T>& list)
-	{
-		throw_if(list.size == 0, "Attempt to display empty list!");
-
-		for (auto it = list.begin(); it != list.end(); ++it)
-			out << *it << "\n";
-
-		return out;
-	}
 
 	// Class for convenient container passage
 	class Iterator
@@ -159,7 +149,11 @@ public:
 		}
 
 		// Operator for getting data
-		T& operator * () { return ptr->data; }
+		T& operator * ()
+		{
+			throw_if(ptr == nullptr, "Trying to work with empty pointer!");
+			return ptr->data;
+		}
 
 		// Comparison operators
 		bool operator == (const Iterator& it) { return ptr == it.ptr; }
@@ -451,6 +445,19 @@ void ForwardList<T>::throw_if(bool condition, const char* message)
 {
 	if (condition)
 		throw std::runtime_error(message);
+}
+
+// Output operator
+template <typename T>
+std::ostream& operator << (std::ostream& out, const ForwardList<T>& list)
+{
+	if (list.count() == 0)
+		throw "Attempt to display empty list!";
+
+	for (auto& element : list)
+		out << element << "\n";
+
+	return out;
 }
 
 #endif
