@@ -23,6 +23,7 @@ public:
 	void pop();
 	T& peek();
 
+	int count() const;
 	float get_arithmetic_mean();
 	Queue concat_sort(const Queue& queue);
 
@@ -35,16 +36,6 @@ public:
 	bool operator > (const Queue& queue);
 	bool operator <= (const Queue& queue);
 	bool operator >= (const Queue& queue);
-
-	/**
-    * @brief Returns the number of items on the queue
-    *
-    * @return Number of items in the queue
-    */
-	int count() const
-	{
-	    return end_index >= start_index ? end_index - start_index : size - start_index + end_index;
-	};
 
     template<class U>
 	friend std::ostream& operator << (std::ostream& stream, const Queue<U>& queue);
@@ -73,6 +64,17 @@ Queue<T>::~Queue()
 {
     if (data)
         delete[] data;
+}
+
+/**
+* @brief Returns the number of items on the queue
+*
+* @return Number of items in the queue
+*/
+template<typename T>
+int Queue<T>::count() const
+{
+    return end_index >= start_index ? end_index - start_index : size - start_index + end_index;
 }
 
 /**

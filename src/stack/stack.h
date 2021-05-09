@@ -19,6 +19,7 @@ class Stack {
         void push(T);
         T pop();
         T& peek();
+        int count() const;
         float getAverage();
         Stack<T> concat(const Stack<T>& stack);
 
@@ -28,15 +29,6 @@ class Stack {
         bool operator!=(const Stack<T>& right);
         bool operator<=(const Stack<T>& right);
         bool operator>=(const Stack<T>& right);
-
-        /**
-         * @brief Returns the number of items on the stack
-         *
-         * @return Number of items in the stack
-         */
-        int count() const {
-            return head + 1;
-        };
 
         template<class U>
         friend std::ostream& operator<<(std::ostream& stream, const Stack<U>& stack);
@@ -56,6 +48,16 @@ template<typename T>
 Stack<T>::Stack(int size) {
     this->size = size;
     arr = new T[size];
+}
+
+/**
+* @brief Returns the number of items on the stack
+*
+* @return Number of items in the stack
+*/
+template<typename T>
+int Stack<T>::count() const {
+    return head + 1;
 }
 
 template<typename T>
