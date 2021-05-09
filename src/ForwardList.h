@@ -21,7 +21,7 @@ public:
 		Node* next {nullptr};
 	};
 
-	size_t count {0};
+	size_t size {0};
 	Node* head {nullptr};
 
 public:
@@ -45,8 +45,8 @@ public:
 	Iterator begin() const { return head; }
 	Iterator end() const { return nullptr; }
 
-	size_t size() const { return count; }
-	bool empty() const { return count == 0; }
+	size_t count() const { return size; }
+	bool empty() const { return size == 0; }
 
 	void clear();
 
@@ -142,13 +142,13 @@ void ForwardList<T>::push_front(T value)
 	head = node;
 	node->next = old_head;
 
-	count++;
+	size++;
 }
 
 template <typename T>
 void ForwardList<T>::push_back(T value)
 {
-	if (count == 0)
+	if (size == 0)
 		return push_front(value);
 
 	Node* node = new Node(value);
@@ -158,13 +158,13 @@ void ForwardList<T>::push_back(T value)
 		it = it->next;
 
 	it->next = node;
-	count++;
+	size++;
 }
 
 template <typename T>
 void ForwardList<T>::insert(const Iterator& it, T value)
 {
-	throw_if(count == 0, "Attempt to insert item to empty list!");
+	throw_if(size == 0, "Attempt to insert item to empty list!");
 
 	if (const_cast<Iterator&>(it) == end())
 		return push_back(value);
@@ -176,27 +176,27 @@ void ForwardList<T>::insert(const Iterator& it, T value)
 	current_node->next = new_node;
 	new_node->next = old_next_node;
 
-	count++;
+	size++;
 }
 
 template <typename T>
 void ForwardList<T>::pop_front()
 {
-	throw_if(count == 0, "Attempt to delete item from empty list!");
+	throw_if(size == 0, "Attempt to delete item from empty list!");
 
 	Node* old_head = head;
 	head = head->next;
 	delete old_head;
 
-	count--;
+	size--;
 }
 
 template <typename T>
 void ForwardList<T>::pop_back()
 {
-	throw_if(count == 0, "Attempt to delete item from empty list!");
+	throw_if(size == 0, "Attempt to delete item from empty list!");
 
-	if (count == 1)
+	if (size == 1)
 		return pop_front();
 
 	Node* it = head;
@@ -211,13 +211,13 @@ void ForwardList<T>::pop_back()
 	delete it;
 	it_prev->next = nullptr;
 
-	count--;
+	size--;
 }
 
 template <typename T>
 void ForwardList<T>::erase(const Iterator& it)
 {
-	throw_if(count == 0, "Attempt to erase item from empty list!");
+	throw_if(size == 0, "Attempt to erase item from empty list!");
 
 	Node* current_node = const_cast<Iterator&>(it).get_node();
 	Node* node_for_delete = current_node->next;
@@ -226,13 +226,13 @@ void ForwardList<T>::erase(const Iterator& it)
 	delete node_for_delete;
 	current_node->next = next_node;
 
-	count--;
+	size--;
 }
 
 template <typename T>
 void ForwardList<T>::clear()
 {
-	while (count != 0)
+	while (size != 0)
 		pop_front();
 }
 
@@ -245,7 +245,7 @@ ForwardList<T> ForwardList<T>::merge_and_sort(const ForwardList<T>& list_1, cons
 		list.push_back(*it);
 
 	for (auto it_i = list.begin(); it_i != list.end(); ++it_i)
-		for (auto it_j = list.begin(); it_j != list.begin() + (list.size() - 1); ++it_j)
+		for (auto it_j = list.begin(); it_j != list.begin() + (list.count() - 1); ++it_j)
 			if (*(it_j + 1) < *it_j)
 				std::swap(*(it_j + 1), *it_j);
 
@@ -261,7 +261,7 @@ ForwardList<T> ForwardList<T>::merge_and_sort(const ForwardList<T>& list)
 template <typename T>
 std::pair<T, T> ForwardList<T>::clear_min_max()
 {
-	throw_if(count < 2, "The number of items in list must be at least 2!");
+	throw_if(size < 2, "The number of items in list must be at least 2!");
 
 	int current_index = 0;
 	int del_index = 0;
@@ -270,7 +270,7 @@ std::pair<T, T> ForwardList<T>::clear_min_max()
 	{
 		if (del_index == 0)
 			pop_front();
-		else if (del_index == count - 1)
+		else if (del_index == size - 1)
 			pop_back();
 		else
 			erase(begin() + del_index);
@@ -331,10 +331,10 @@ ForwardList<T>& ForwardList<T>::operator = (ForwardList<T>&& list)
 	clear();
 
 	head = list.head;
-	count = list.count;
+	size = list.size;
 
 	list.head = nullptr;
-	list.count = 0;
+	list.size = 0;
 
 	return *this;
 }
@@ -345,7 +345,7 @@ bool ForwardList<T>::operator == (const ForwardList<T>& list)
 	if (&list == this)
 		return true;
 
-	if (count != list.count)
+	if (size != list.size)
 		return false;
 
 	auto this_begin = begin();
@@ -382,7 +382,7 @@ bool ForwardList<T>::operator < (const ForwardList<T>& list)
 			return this_value < list_value;
 	}
 
-	return count < list.count;
+	return size < list.size;
 }
 
 template <typename T>
