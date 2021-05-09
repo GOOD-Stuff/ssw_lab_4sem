@@ -23,7 +23,7 @@ public:
 	};
 
 	// Number of elements
-	size_t size {0}
+	size_t size {0};
 
 	// Pointer to first element
 	Node* head {nullptr};
