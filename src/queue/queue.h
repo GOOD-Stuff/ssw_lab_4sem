@@ -11,7 +11,7 @@ private:
 	T* data {nullptr};
 	int size {ADDITION};
 	int start_index {0};
-	int end_index = {0};
+	int end_index {0};
 	T& at(int index) const;
 
 public:

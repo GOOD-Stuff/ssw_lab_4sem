@@ -9,7 +9,7 @@ class Stack {
         static constexpr int DEFAULT_SIZE {1024};
         int head {-1};
         int size {DEFAULT_SIZE};
-        T* arr = {nullptr};
+        T* arr {nullptr};
         void init(int);
         void checkDimension();
     public:
