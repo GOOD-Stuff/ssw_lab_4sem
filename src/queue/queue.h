@@ -213,7 +213,7 @@ Queue<T>& Queue<T>::operator = (const Queue<T>& queue)
     start_index = queue.start_index;
     end_index = queue.end_index;
 
-    for (int i = 0; i < queue.count(); i++)
+    for (int i = 0; i < queue.size; i++)
         data[i] = queue.data[i];
 
     return *this;
