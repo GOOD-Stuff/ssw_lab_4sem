@@ -12,6 +12,7 @@ private:
 	static void throw_if(bool condition, const char* message);
 
 public:
+	// ForwardList cell (data value, pointer to next cell)
 	struct Node
 	{
 		Node() = delete;
@@ -21,33 +22,59 @@ public:
 		Node* next {nullptr};
 	};
 
-	size_t size {0};
+	// Number of elements
+	size_t size {0}
+
+	// Pointer to first element
 	Node* head {nullptr};
 
 public:
 	class Iterator;
 
 	ForwardList() = default;
+
+	// Constructor with support initializer list
 	ForwardList(const std::initializer_list<T>& list);
+
+	// Copy constructor
 	ForwardList(const ForwardList<T>& list) { *this = list; }
+
+	// Move constructor
 	ForwardList(ForwardList<T>&& list) noexcept { *this = std::move(list); }
 
 	~ForwardList() { clear(); }
 
+	// Add item to front
 	void push_front(T value);
+
+	// Add item to back
 	void push_back(T value);
+
+	// Insert element in any position of list
 	void insert(const Iterator& it, T value);
 
+	// Remove first element
 	void pop_front();
+
+	// Remove last element
 	void pop_back();
+
+	// Remove element from any position of list
 	void erase(const Iterator& it);
 
+	// Get iterator to begin list
 	Iterator begin() const { return head; }
+
+	// Get iterator to end list
 	Iterator end() const { return nullptr; }
 
+	// Get elements count
 	size_t count() const { return size; }
+
+	// Container is empty?
 	bool empty() const { return size == 0; }
 
+	// Delete all items from container
 	void clear();
 
 	static ForwardList<T> merge_and_sort(const ForwardList<T>& list_1, const ForwardList<T>& list_2);
@@ -55,9 +82,13 @@ public:
 
 	std::pair<T, T> clear_min_max();
 
+	// Copy operator
 	ForwardList<T>& operator = (const ForwardList<T>& list);
+
+	// Move operator
 	ForwardList<T>& operator = (ForwardList<T>&& list);
 
+	// Lexicographic comparison operators
 	bool operator == (const ForwardList<T>& list);
 	bool operator != (const ForwardList<T>& list);
 
@@ -67,6 +98,7 @@ public:
 	bool operator <= (const ForwardList<T>& list);
 	bool operator >= (const ForwardList<T>& list);
 
+	// Output operator
 	friend std::ostream& operator << (std::ostream& out, const ForwardList<T>& list)
 	{
 		for (auto it = list.begin(); it != list.end(); ++it)
@@ -75,6 +107,7 @@ public:
 		return out;
 	}
 
+	// Class for convenient container passage
 	class Iterator
 	{
 	private:
@@ -82,12 +115,15 @@ public:
 
 	private:
 		friend class ForwardList<T>;
+		
+		// Get a container cell in its raw form
 		Node* get_node() { return ptr; }
 
 	public:
 		Iterator() = default;
 		Iterator(Node* p) : ptr(p) {}
 
+		// Prefix operator ++
 		Iterator& operator ++ ()
 		{
 			throw_if(ptr == nullptr, "Trying to work with empty pointer!");
@@ -96,6 +132,7 @@ public:
 			return *this;
 		}
 
+		// Postfix operator ++
 		Iterator operator ++ (int)
 		{
 			throw_if(ptr == nullptr, "Trying to work with empty pointer!");
@@ -105,6 +142,7 @@ public:
 			return old_ptr;
 		}
 
+		// Shift operator
 		Iterator operator + (size_t offset)
 		{
 			throw_if(ptr == nullptr, "Trying to work with empty pointer!");
@@ -117,8 +155,10 @@ public:
 			return it;
 		}
 
+		// Operator for getting data
 		T& operator * () { return ptr->data; }
 
+		// Comparison operators
 		bool operator == (const Iterator& it) { return ptr == it.ptr; }
 		bool operator != (const Iterator& it) { return ptr != it.ptr; }
 	};
@@ -262,6 +302,8 @@ template <typename T>
 std::pair<T, T> ForwardList<T>::clear_min_max()
 {
 	throw_if(size < 2, "The number of items in list must be at least 2!");
+
+	// I don't like this implementation... Maybe I'll redo it later
 
 	int current_index = 0;
 	int del_index = 0;
