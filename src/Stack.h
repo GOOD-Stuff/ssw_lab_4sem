@@ -18,7 +18,7 @@ public:
 
 	T pop(); // Removing and returning the top of the stack
 
-	T peek(); // Returning the top of the stack
+	T& peek(); // Returning the top of the stack
 
 	int count() const; // Returning the real size
 
@@ -84,7 +84,7 @@ T Stack<T>::pop() {
 }
 
 template<typename T>
-T Stack<T>::peek() {
+T& Stack<T>::peek() {
 	if (top == -1) {
 		throw std::runtime_error("Stack is empty! Peek failed");
 		return 0;
