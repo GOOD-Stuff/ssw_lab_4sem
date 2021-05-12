@@ -52,7 +52,7 @@ template<typename T>
 void Vector<T>::checkOverflow() {
 	if (last + 1 == size) {
 		T* tmp = arr;
-		size += DEF_SIZE;
+		size *= DEF_SIZE;
 		arr = new T[size];
 		for (int i = 0; i <= last; i++) {
 			arr[i] = tmp[i];
