@@ -3,6 +3,7 @@
 
 #include <stdexcept>
 #include <ostream>
+#include "QuickSort.h"
 
 template <typename T>
 class List
