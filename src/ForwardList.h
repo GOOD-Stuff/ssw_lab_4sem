@@ -3,6 +3,7 @@
 
 #include <stdexcept>
 #include <ostream>
+#include "QuickSort.h"
 
 template <typename T>
 class ForwardList
@@ -77,9 +78,10 @@ public:
 	// Delete all items from container
 	void clear();
 
-	static ForwardList<T> merge_and_sort(const ForwardList<T>& list_1, const ForwardList<T>& list_2);
+	// Individual task 1, variant 3
 	ForwardList<T> merge_and_sort(const ForwardList<T>& list);
 
+	// Individual task 2, variant 3
 	std::pair<T, T> clear_min_max();
 
 	// Copy operator
@@ -103,18 +105,16 @@ public:
 	class Iterator
 	{
 	private:
+		friend class ForwardList<T>;
+
 		// Pointer to a container cell
 		Node* ptr {nullptr};
 
-	private:
-		friend class ForwardList<T>;
-		
-		// Get a container cell in its raw form
-		Node* get_node() { return ptr; }
+		// Private constructor
+		Iterator(Node* p) : ptr(p) {}
 
 	public:
 		Iterator() = default;
-		Iterator(Node* p) : ptr(p) {}
 
 		// Prefix operator ++
 		Iterator& operator ++ ()
@@ -204,11 +204,10 @@ void ForwardList<T>::insert(const Iterator& it, T value)
 	if (const_cast<Iterator&>(it) == end())
 		return push_back(value);
 
-	Node* current_node = const_cast<Iterator&>(it).get_node();
-	Node* old_next_node = current_node->next;
+	Node* old_next_node = it.ptr->next;
 	Node* new_node = new Node(value);
 
-	current_node->next = new_node;
+	it.ptr->next = new_node;
 	new_node->next = old_next_node;
 
 	size++;
@@ -254,12 +253,11 @@ void ForwardList<T>::erase(const Iterator& it)
 {
 	throw_if(size == 0, "Attempt to erase item from empty list!");
 
-	Node* current_node = const_cast<Iterator&>(it).get_node();
-	Node* node_for_delete = current_node->next;
+	Node* node_for_delete = it.ptr->next;
 	Node* next_node = node_for_delete->next;
 
 	delete node_for_delete;
-	current_node->next = next_node;
+	it.ptr->next = next_node;
 
 	size--;
 }
@@ -272,25 +270,29 @@ void ForwardList<T>::clear()
 }
 
 template <typename T>
-ForwardList<T> ForwardList<T>::merge_and_sort(const ForwardList<T>& list_1, const ForwardList<T>& list_2)
-{
-	ForwardList<T> list = list_1;
-
-	for (auto it = list_2.begin(); it != list_2.end(); ++it)
-		list.push_back(*it);
-
-	for (auto it_i = list.begin(); it_i != list.end(); ++it_i)
-		for (auto it_j = list.begin(); it_j != list.begin() + (list.count() - 1); ++it_j)
-			if (*(it_j + 1) < *it_j)
-				std::swap(*(it_j + 1), *it_j);
-
-	return list;
-}
-
-template <typename T>
 ForwardList<T> ForwardList<T>::merge_and_sort(const ForwardList<T>& list)
 {
-	return merge_and_sort(*this, list);
+	size_t list_size = size + list.size;
+	T* temp_storage = new T[list_size];
+
+	size_t idx = 0;
+
+	for (auto& element : *this)
+		temp_storage[idx++] = element;
+
+	for (auto& element : list)
+		temp_storage[idx++] = element;
+
+	QuickSort<T>(temp_storage, list_size);
+
+	ForwardList<T> new_list;
+
+	for (int i = list_size - 1; i >= 0; i--)
+		new_list.push_front(temp_storage[i]);
+
+	delete[] temp_storage;
+
+	return new_list;
 }
 
 template <typename T>
@@ -353,8 +355,8 @@ ForwardList<T>& ForwardList<T>::operator = (const ForwardList<T>& list)
 
 	clear();
 
-	for (auto it = list.begin(); it != list.end(); ++it)
-		push_back(*it);
+	for (auto& element : list)
+		push_back(element);
 
 	return *this;
 }
@@ -388,7 +390,7 @@ bool ForwardList<T>::operator == (const ForwardList<T>& list)
 	auto this_begin = begin();
 	auto list_begin = list.begin();
 
-	while (this_begin != end() && list_begin != list.end())
+	while (this_begin != end())
 		if (*(this_begin++) != *(list_begin++))
 			return false;
 
