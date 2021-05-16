@@ -11,7 +11,7 @@ private:
 	friend class Iterator;
 	static void throw_if(bool condition, const char* message);
 
-public:
+
 	// ForwardList cell (data value, pointer to next cell)
 	struct Node
 	{
