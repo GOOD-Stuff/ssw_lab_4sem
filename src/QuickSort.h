@@ -6,6 +6,12 @@
 template <typename T>
 void QuickSort(T* arr, size_t size)
 {
+	if (arr == nullptr)
+		throw std::runtime_error("Trying to work with empty pointer!");
+
+	if (size == 0)
+		throw std::runtime_error("Size cannot be zero!");
+
 	T& mid = arr[size / 2];
 
 	int i = 0;
