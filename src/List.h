@@ -386,8 +386,8 @@ List<T>& List<T>::operator = (const List<T>& list)
 
 	clear();
 
-	for (auto it = list.begin(); it != list.end(); ++it)
-		push_back(*it);
+	for (auto& element : list)
+		push_back(element);
 
 	return *this;
 }
