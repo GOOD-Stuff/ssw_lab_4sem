@@ -12,7 +12,7 @@ private:
 	static void throw_if(bool condition, const char* message);
 	void destroy();
 
-public:
+
 	// List cell (data value, pointer to prev cell, pointer to next cell)
 	struct Node
 	{
@@ -83,9 +83,10 @@ public:
 	// Delete all items from container
 	void clear();
 
-	static List<T> merge_and_sort(const List<T>& list_1, const List<T>& list_2);
+	// Individual task 1, variant 3
 	List<T> merge_and_sort(const List<T>& list);
 
+	// Individual task 2, variant 3
 	std::pair<T, T> clear_min_max();
 
 	// Copy operator
@@ -109,18 +110,16 @@ public:
 	class Iterator
 	{
 	private:
+		friend class List<T>;
+
 		// Pointer to a container cell
 		Node* ptr {nullptr};
 
-	private:
-		friend class List<T>;
-
-		// Get a container cell in its raw form
-		Node* get_node() { return ptr; }
+		// Private constructor
+		Iterator(Node* p) : ptr(p) {}
 
 	public:
 		Iterator() = default;
-		Iterator(Node* p) : ptr(p) {}
 
 		// Prefix operator ++
 		Iterator& operator ++ ()
@@ -256,14 +255,13 @@ void List<T>::insert(const Iterator& it, T value)
 		return push_back(value);
 
 	Node* new_node = new Node(value);
-	Node* current_node = const_cast<Iterator&>(it).get_node();
-	Node* left_node = current_node->prev;
+	Node* left_node = it.ptr->prev;
 
 	left_node->next = new_node;
 	new_node->prev = left_node;
 
-	new_node->next = current_node;
-	current_node->prev = new_node;
+	new_node->next = it.ptr;
+	it.ptr->prev = new_node;
 
 	size++;
 }
@@ -311,14 +309,13 @@ void List<T>::erase(const Iterator& it)
 	else if (const_cast<Iterator&>(it) == end() - 1)
 		return pop_back();
 
-	Node* current_node = const_cast<Iterator&>(it).get_node();
-	Node* left_node = current_node->prev;
-	Node* right_node = current_node->next;
+	Node* left_node = it.ptr->prev;
+	Node* right_node = it.ptr->next;
 
 	left_node->next = right_node;
 	right_node->prev = left_node;
 
-	delete current_node;
+	delete it.ptr;
 	size--;
 }
 
@@ -330,25 +327,29 @@ void List<T>::clear()
 }
 
 template <typename T>
-List<T> List<T>::merge_and_sort(const List<T>& list_1, const List<T>& list_2)
-{
-	List<T> list = list_1;
-
-	for (auto it = list_2.begin(); it != list_2.end(); ++it)
-		list.push_back(*it);
-
-	for (auto it_i = list.begin(); it_i != list.end(); ++it_i)
-		for (auto it_j = list.begin(); it_j != list.begin() + (list.count() - 1); ++it_j)
-			if (*(it_j + 1) < *it_j)
-				std::swap(*(it_j + 1), *it_j);
-
-	return list;
-}
-
-template <typename T>
 List<T> List<T>::merge_and_sort(const List<T>& list)
 {
-	return merge_and_sort(*this, list);
+	size_t list_size = size + list.size;
+	T* temp_storage = new T[list_size];
+
+	size_t idx = 0;
+
+	for (auto& element : *this)
+		temp_storage[idx++] = element;
+
+	for (auto& element : list)
+		temp_storage[idx++] = element;
+
+	QuickSort<T>(temp_storage, list_size);
+
+	List<T> new_list;
+
+	for (int i = list_size - 1; i >= 0; i--)
+		new_list.push_front(temp_storage[i]);
+
+	delete[] temp_storage;
+
+	return new_list;
 }
 
 template <typename T>
@@ -356,8 +357,8 @@ std::pair<T, T> List<T>::clear_min_max()
 {
 	throw_if(size < 2, "The number of items in list must be at least 2!");
 
-	Iterator min_it = begin();
-	Iterator max_it = begin();
+	auto min_it = begin();
+	auto max_it = begin();
 
 	for (auto it = begin() + 1; it != end(); ++it)
 	{
@@ -421,7 +422,7 @@ bool List<T>::operator == (const List<T>& list)
 	auto this_begin = begin();
 	auto list_begin = list.begin();
 
-	while (this_begin != end() && list_begin != list.end())
+	while (this_begin != end())
 		if (*(this_begin++) != *(list_begin++))
 			return false;
 
