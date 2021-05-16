@@ -8,7 +8,7 @@ Stack::Stack()
 
 Stack::~Stack()
 {
-	if (data == nullptr) {
+	if (data != nullptr) {
 		delete[] data;
 		size = 0;
 	}

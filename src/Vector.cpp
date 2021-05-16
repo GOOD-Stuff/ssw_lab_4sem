@@ -8,7 +8,7 @@ Vector::Vector()
 
 Vector::~Vector()
 {
-	if (data == nullptr) {
+	if (data != nullptr) {
 		delete[] data;
 		size = 0;
 	}

@@ -9,7 +9,7 @@ Queue::Queue()
 
 Queue::~Queue()
 {
-	if (data == nullptr) {
+	if (data != nullptr) {
 		delete[] data;
 		size = 0;
 	}
