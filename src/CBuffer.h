@@ -62,7 +62,7 @@ public:
 	void clear() { list.clear(); }
 
 	// Individual task 1, variant 3
-	CBuffer<T> merge_and_sort(const CBuffer<T>& buffer) { return list.merge_and_sort(buffer.list); }
+	CBuffer<T> merge_and_sort(const CBuffer<T>& buffer) const { return list.merge_and_sort(buffer.list); }
 
 	// Individual task 2, variant 3
 	std::pair<T, T> clear_min_max() { return list.clear_min_max(); }
@@ -139,7 +139,7 @@ CBuffer<T>& CBuffer<T>::operator = (const CBuffer<T>& buffer)
 template <typename T>
 CBuffer<T>& CBuffer<T>::operator = (CBuffer<T>&& buffer) noexcept
 {
-	if (&list == this)
+	if (&buffer == this)
 		return *this;
 
 	clear();

@@ -85,7 +85,7 @@ public:
 	void clear();
 
 	// Individual task 1, variant 3
-	List<T> merge_and_sort(const List<T>& list);
+	List<T> merge_and_sort(const List<T>& list) const;
 
 	// Individual task 2, variant 3
 	std::pair<T, T> clear_min_max();
@@ -328,7 +328,7 @@ void List<T>::clear()
 }
 
 template <typename T>
-List<T> List<T>::merge_and_sort(const List<T>& list)
+List<T> List<T>::merge_and_sort(const List<T>& list) const
 {
 	size_t list_size = size + list.size;
 	T* temp_storage = new T[list_size];

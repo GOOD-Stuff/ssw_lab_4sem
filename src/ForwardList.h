@@ -79,7 +79,7 @@ public:
 	void clear();
 
 	// Individual task 1, variant 3
-	ForwardList<T> merge_and_sort(const ForwardList<T>& list);
+	ForwardList<T> merge_and_sort(const ForwardList<T>& list) const;
 
 	// Individual task 2, variant 3
 	std::pair<T, T> clear_min_max();
@@ -270,7 +270,7 @@ void ForwardList<T>::clear()
 }
 
 template <typename T>
-ForwardList<T> ForwardList<T>::merge_and_sort(const ForwardList<T>& list)
+ForwardList<T> ForwardList<T>::merge_and_sort(const ForwardList<T>& list) const
 {
 	size_t list_size = size + list.size;
 	T* temp_storage = new T[list_size];
