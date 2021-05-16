@@ -1,7 +1,6 @@
 #ifndef CLASS_CIRCULAR_BUFFER_H
 #define CLASS_CIRCULAR_BUFFER_H
 
-#include <ostream>
 #include "List.h"
 
 template <typename T>
@@ -125,7 +124,7 @@ void CBuffer<T>::insert(const Iterator& it, T value)
 template <typename T>
 CBuffer<T>& CBuffer<T>::operator = (const CBuffer<T>& buffer)
 {
-	if (&list == this)
+	if (&buffer == this)
 		return *this;
 
 	clear();
