@@ -91,14 +91,14 @@ public:
 	ForwardList<T>& operator = (ForwardList<T>&& list);
 
 	// Lexicographic comparison operators
-	bool operator == (const ForwardList<T>& list);
-	bool operator != (const ForwardList<T>& list);
+	bool operator == (const ForwardList<T>& list) const;
+	bool operator != (const ForwardList<T>& list) const;
 
-	bool operator < (const ForwardList<T>& list);
-	bool operator > (const ForwardList<T>& list);
+	bool operator < (const ForwardList<T>& list) const;
+	bool operator > (const ForwardList<T>& list) const;
 
-	bool operator <= (const ForwardList<T>& list);
-	bool operator >= (const ForwardList<T>& list);
+	bool operator <= (const ForwardList<T>& list) const;
+	bool operator >= (const ForwardList<T>& list) const;
 
 
 	// Class for convenient container passage
@@ -156,8 +156,8 @@ public:
 		}
 
 		// Comparison operators
-		bool operator == (const Iterator& it) { return ptr == it.ptr; }
-		bool operator != (const Iterator& it) { return ptr != it.ptr; }
+		bool operator == (const Iterator& it) const { return ptr == it.ptr; }
+		bool operator != (const Iterator& it) const { return ptr != it.ptr; }
 	};
 };
 
@@ -379,7 +379,7 @@ ForwardList<T>& ForwardList<T>::operator = (ForwardList<T>&& list)
 }
 
 template <typename T>
-bool ForwardList<T>::operator == (const ForwardList<T>& list)
+bool ForwardList<T>::operator == (const ForwardList<T>& list) const
 {
 	if (&list == this)
 		return true;
@@ -398,13 +398,13 @@ bool ForwardList<T>::operator == (const ForwardList<T>& list)
 }
 
 template <typename T>
-bool ForwardList<T>::operator != (const ForwardList<T>& list)
+bool ForwardList<T>::operator != (const ForwardList<T>& list) const
 {
 	return !(*this == list);
 }
 
 template <typename T>
-bool ForwardList<T>::operator < (const ForwardList<T>& list)
+bool ForwardList<T>::operator < (const ForwardList<T>& list) const
 {
 	if (&list == this)
 		return false;
@@ -425,19 +425,19 @@ bool ForwardList<T>::operator < (const ForwardList<T>& list)
 }
 
 template <typename T>
-bool ForwardList<T>::operator > (const ForwardList<T>& list)
+bool ForwardList<T>::operator > (const ForwardList<T>& list) const
 {
 	return !(*this < list) && *this != list;
 }
 
 template <typename T>
-bool ForwardList<T>::operator <= (const ForwardList<T>& list)
+bool ForwardList<T>::operator <= (const ForwardList<T>& list) const
 {
 	return *this < list || *this == list;
 }
 
 template <typename T>
-bool ForwardList<T>::operator >= (const ForwardList<T>& list)
+bool ForwardList<T>::operator >= (const ForwardList<T>& list) const
 {
 	return *this > list || *this == list;
 }

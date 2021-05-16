@@ -97,14 +97,14 @@ public:
 	List<T>& operator = (List<T>&& list) noexcept;
 
 	// Lexicographic comparison operators
-	bool operator == (const List<T>& list);
-	bool operator != (const List<T>& list);
+	bool operator == (const List<T>& list) const;
+	bool operator != (const List<T>& list) const;
 
-	bool operator < (const List<T>& list);
-	bool operator > (const List<T>& list);
+	bool operator < (const List<T>& list) const;
+	bool operator > (const List<T>& list) const;
 
-	bool operator <= (const List<T>& list);
-	bool operator >= (const List<T>& list);
+	bool operator <= (const List<T>& list) const;
+	bool operator >= (const List<T>& list) const;
 
 
 	// Class for convenient container passage
@@ -194,8 +194,8 @@ public:
 		}
 
 		// Comparison operators
-		bool operator == (const Iterator& it) { return ptr == it.ptr; }
-		bool operator != (const Iterator& it) { return ptr != it.ptr; }
+		bool operator == (const Iterator& it) const { return ptr == it.ptr; }
+		bool operator != (const Iterator& it) const { return ptr != it.ptr; }
 	};
 };
 
@@ -412,7 +412,7 @@ List<T>& List<T>::operator = (List<T>&& list) noexcept
 }
 
 template <typename T>
-bool List<T>::operator == (const List<T>& list)
+bool List<T>::operator == (const List<T>& list) const
 {
 	if (&list == this)
 		return true;
@@ -431,13 +431,13 @@ bool List<T>::operator == (const List<T>& list)
 }
 
 template <typename T>
-bool List<T>::operator != (const List<T>& list)
+bool List<T>::operator != (const List<T>& list) const
 {
 	return !(*this == list);
 }
 
 template <typename T>
-bool List<T>::operator < (const List<T>& list)
+bool List<T>::operator < (const List<T>& list) const
 {
 	if (&list == this)
 		return false;
@@ -458,19 +458,19 @@ bool List<T>::operator < (const List<T>& list)
 }
 
 template <typename T>
-bool List<T>::operator > (const List<T>& list)
+bool List<T>::operator > (const List<T>& list) const
 {
 	return !(*this < list) && *this != list;
 }
 
 template <typename T>
-bool List<T>::operator <= (const List<T>& list)
+bool List<T>::operator <= (const List<T>& list) const
 {
 	return *this < list || *this == list;
 }
 
 template <typename T>
-bool List<T>::operator >= (const List<T>& list)
+bool List<T>::operator >= (const List<T>& list) const
 {
 	return *this > list || *this == list;
 }
