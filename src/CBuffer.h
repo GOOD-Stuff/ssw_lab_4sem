@@ -11,7 +11,7 @@ private:
 	// Base container for CBuffer
 	List<T> list;
 
-	// Maxi number of elements
+	// Max number of elements
 	size_t max_size;
 
 	// Private move constructor
