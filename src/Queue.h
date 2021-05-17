@@ -64,7 +64,8 @@ Queue<T>::Queue() {
 
 template<typename T>
 Queue<T>::~Queue() {
-	delete[] arr;
+	if (arr != nullptr)
+		delete[] arr;
 }
 template<typename T>
 void Queue<T>::push(T elem) {
@@ -105,8 +106,20 @@ int Queue<T>::count() const {
 template<typename T>
 bool Queue<T>::isMount() {
 	if (last >= 3) {
-		for (int i = 0; i < last-1; i++) {
+		T max = arr[0];
+		T max_i;
+		for (int i = 0; i <= last; i++) {
+			if (arr[i] > max) {
+				max = arr[i];
+				max_i = i;
+			}
+		}
+		for (int i = 0; i < max_i; i++) {
 			if (arr[i] > arr[i + 1])
+				return false;
+		}
+		for (int i = last; i != max_i; i--) {
+			if (arr[i] > arr[i - 1])
 				return false;
 		}
 		return true;
@@ -116,6 +129,8 @@ bool Queue<T>::isMount() {
 
 template<typename T>
 void Queue<T>::swap(Queue<T>& v) {
+	if (v == *this)
+		throw std::runtime_error("Can't swap the same object");
 	T* tmp_arr = arr;
 	int tmp_size = size;
 	int tmp_last = last;
@@ -136,10 +151,10 @@ bool Queue<T>::operator < (const Queue<T>& right) const {
 	int rightSize = right.last;
 	int size_b = (thisSize > rightSize) ? rightSize : thisSize;
 	for (int i = 0; i < size_b; i++) {
-		if (arr[i] < right.arr[i])
-			return true;
+		if (arr[i] != right.arr[i])
+			return arr[i] < right.arr[i];
 	}
-	return false;
+	return thisSize < rightSize;
 }
 
 template <typename T>

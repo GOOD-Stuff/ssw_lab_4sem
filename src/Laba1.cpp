@@ -42,10 +42,12 @@ void test_s() {
     cout << "\n------------------------\nTEST ISMOUNT\n\n";
     Stack<int> q_mount;
     Stack<int> q1_mount;
-    for (int i = 0; i < 10; i++) {
-        q_mount.push(i);
-    }
     q_mount.push(1);
+    q_mount.push(2);
+    q_mount.push(3);
+    q_mount.push(4);
+    q_mount.push(3);
+    q_mount.push(2);
     for (int i = 0; i < 5; i++) {
         q1_mount.push(i);
     }
@@ -63,15 +65,26 @@ void test_s() {
 
     stack<int> Q_cmp;
     stack<int> Q1_cmp;
+    q_cmp.push(1);
+    q_cmp.push(20);
+    q_cmp.push(3);
 
-    for (int i = 0; i < 10; i++) {
-        q_cmp.push(i);
-        Q_cmp.push(i);
-    }
-    for (int i = 10; i != 1; i--) {
-        q1_cmp.push(i);
-        Q1_cmp.push(i);
-    }
+    Q_cmp.push(1);
+    Q_cmp.push(20);
+    Q_cmp.push(3);
+
+    q1_cmp.push(1);
+    q1_cmp.push(20);
+    q1_cmp.push(3);
+    q1_cmp.push(4);
+    q1_cmp.push(5);
+
+    Q1_cmp.push(1);
+    Q1_cmp.push(20);
+    Q1_cmp.push(3);
+    Q1_cmp.push(4);
+    Q1_cmp.push(5);
+
     cout << "s: " << q_cmp << "s1: " << q1_cmp;
     cout << "\ns < s1 | " << "my stack: " << (q_cmp < q1_cmp) << " | STL stack: " << (Q_cmp < Q1_cmp);
     cout << "\ns > s1 | " << "my stack: " << (q_cmp > q1_cmp) << " | STL stack: " << (Q_cmp > Q1_cmp);
@@ -195,10 +208,12 @@ void test_q() {
     cout << "\n------------------------\nTEST ISMOUNT\n\n";
     Queue<int> q_mount;
     Queue<int> q1_mount;
-    for (int i = 0; i < 10; i++) {
-        q_mount.push(i);
-    }
     q_mount.push(1);
+    q_mount.push(2);
+    q_mount.push(3);
+    q_mount.push(4);
+    q_mount.push(3);
+    q_mount.push(2);
     for (int i = 0; i < 5; i++) {
         q1_mount.push(i);
     }
@@ -217,14 +232,24 @@ void test_q() {
     queue<int> Q_cmp;
     queue<int> Q1_cmp;
 
-    for (int i = 0; i < 10; i++) {
-        q_cmp.push(i);
-        Q_cmp.push(i);
-    }
-    for (int i = 10; i != 1; i--) {
-        q1_cmp.push(i);
-        Q1_cmp.push(i);
-    }
+    q_cmp.push(1);
+    q_cmp.push(20);
+    q_cmp.push(3);
+
+    Q_cmp.push(1);
+    Q_cmp.push(20);
+    Q_cmp.push(3);
+
+    q1_cmp.push(1);
+    q1_cmp.push(20);
+    q1_cmp.push(3);
+    q1_cmp.push(4);
+    q1_cmp.push(5);
+
+    Q1_cmp.push(1);
+    Q1_cmp.push(20);
+    Q1_cmp.push(3);
+    Q1_cmp.push(4);
     cout << "q: " << q_cmp << "q1: " << q1_cmp;
     cout << "\nq < q1 | " << "my queue: " << (q_cmp < q1_cmp) << " | STL queue: " << (Q_cmp < Q1_cmp);
     cout << "\nq > q1 | " << "my queue: " << (q_cmp > q1_cmp) << " | STL queue: " << (Q_cmp > Q1_cmp) ;
@@ -350,10 +375,14 @@ void test_v() {
     cout << "\n------------------------\nTEST ISMOUNT\n\n";
     Vector<int> q_mount;
     Vector<int> q1_mount;
-    for (int i = 0; i < 10; i++) {
-        q_mount.push(i);
-    }
+
+
     q_mount.push(1);
+    q_mount.push(2);
+    q_mount.push(3);
+    q_mount.push(4);
+    q_mount.push(3);
+    q_mount.push(2);
     for (int i = 0; i < 5; i++) {
         q1_mount.push(i);
     }
@@ -372,14 +401,24 @@ void test_v() {
     vector<int> Q_cmp;
     vector<int> Q1_cmp;
 
-    for (int i = 0; i < 10; i++) {
-        q_cmp.push(i);
-        Q_cmp.push_back(i);
-    }
-    for (int i = 10; i != 1; i--) {
-        q1_cmp.push(i);
-        Q1_cmp.push_back(i);
-    }
+    q_cmp.push(1);
+    q_cmp.push(20);
+    q_cmp.push(3);
+
+    Q_cmp.push_back(1);
+    Q_cmp.push_back(20);
+    Q_cmp.push_back(3);
+
+    q1_cmp.push(1);
+    q1_cmp.push(20);
+    q1_cmp.push(3);
+    q1_cmp.push(4);
+    q1_cmp.push(5);
+
+    Q1_cmp.push_back(1);
+    Q1_cmp.push_back(20);
+    Q1_cmp.push_back(3);
+    Q1_cmp.push_back(4);
     cout << "v: " << q_cmp << "v1: " << q1_cmp;
     cout << "\nv < v1 | " << "my vector: " << (q_cmp < q1_cmp) << " | STL vector: " << (Q_cmp < Q1_cmp);
     cout << "\nv > v1 | " << "my vector: " << (q_cmp > q1_cmp) << " | STL vector: " << (Q_cmp > Q1_cmp);

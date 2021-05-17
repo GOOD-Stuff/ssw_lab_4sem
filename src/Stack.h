@@ -87,7 +87,6 @@ template<typename T>
 T& Stack<T>::peek() {
 	if (top == -1) {
 		throw std::runtime_error("Stack is empty! Peek failed");
-		return 0;
 	}
 	return arr[top];
 }
@@ -100,8 +99,20 @@ int Stack<T>::count() const {
 template<typename T>
 bool Stack<T>::isMount() {
 	if (top >= 3) {
-		for (int i = 0; i < top - 1; i++) {
+		T max = arr[0];
+		T max_i;
+		for (int i = 0; i <= top; i++) {
+			if (arr[i] > max) {
+				max = arr[i];
+				max_i = i;
+			}
+		}
+		for (int i = 0; i < max_i; i++) {
 			if (arr[i] > arr[i + 1])
+				return false;
+		}
+		for (int i = top; i != max_i; i--) {
+			if (arr[i] > arr[i - 1])
 				return false;
 		}
 		return true;
@@ -111,6 +122,8 @@ bool Stack<T>::isMount() {
 
 template<typename T>
 void Stack<T>::swap(Stack<T>& v) {
+	if (v == *this) 
+		throw std::runtime_error("Can't swap the same object");
 	T* tmp_arr = arr;
 	int tmp_size = size;
 	int tmp_last = top;
@@ -122,23 +135,25 @@ void Stack<T>::swap(Stack<T>& v) {
 	v.arr = tmp_arr;
 	v.size = tmp_size;
 	v.top = tmp_last;
+	
 }
 
 template<typename T>
 Stack<T>::~Stack() {
-	delete[] arr;
+	if(arr != nullptr)
+		delete[] arr;
 }
 
 template <typename T>
 bool Stack<T>::operator < (const Stack<T>& right) const {
 	int thisSize = top;
-	int rightSize = right.count();
+	int rightSize = right.top;
 	int size_b = (thisSize > rightSize) ? rightSize : thisSize;
 	for (int i = 0; i < size_b; i++) {
-		if (arr[i] < right.arr[i])
-			return true;
+		if (arr[i] != right.arr[i])
+			return arr[i] < right.arr[i];
 	}
-	return false;
+	return thisSize < rightSize;
 }
 
 template <typename T>

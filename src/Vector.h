@@ -91,7 +91,7 @@ T Vector<T>::pop() {
 
 template<typename T>
 T& Vector<T>::at(int i) {
-	if (i > last) {
+	if (i > last || i < 0) {
 		throw std::runtime_error("Index i is empty! At failed");
 	}
 
@@ -114,8 +114,20 @@ int Vector<T>::count() const {
 template<typename T>
 bool Vector<T>::isMount() {
 	if (last >= 3) {
-		for (int i = 0; i < last - 1; i++) {
+		T max = arr[0];
+		T max_i;
+		for (int i = 0; i <= last; i++) {
+			if (arr[i] > max) {
+				max = arr[i];
+				max_i = i;
+			}
+		}
+		for (int i = 0; i < max_i; i++) {
 			if (arr[i] > arr[i + 1])
+				return false;
+		}
+		for (int i = last; i != max_i; i--) {
+			if (arr[i] > arr[i - 1])
 				return false;
 		}
 		return true;
@@ -125,6 +137,8 @@ bool Vector<T>::isMount() {
 
 template<typename T>
 void Vector<T>::swap(Vector<T>& v) {
+	if (v == *this)
+		throw std::runtime_error("Can't swap the same object");
 	T* tmp_arr = arr;
 	int tmp_size = size;
 	int tmp_last = last;
@@ -136,11 +150,13 @@ void Vector<T>::swap(Vector<T>& v) {
 	v.arr = tmp_arr;
 	v.size = tmp_size;
 	v.last = tmp_last;
+	
 }
 
 template<typename T>
 Vector<T>::~Vector() {
-	delete[] arr;
+	if (arr != nullptr)
+		delete[] arr;
 }
 template <typename T>
 bool Vector<T>::operator < (const Vector<T>& right) const {
@@ -148,10 +164,10 @@ bool Vector<T>::operator < (const Vector<T>& right) const {
 	int rightSize = right.last;
 	int size_b = (thisSize > rightSize) ? rightSize : thisSize;
 	for (int i = 0; i < size_b; i++) {
-		if (arr[i] < right.arr[i])
-			return true;
+		if (arr[i] != right.arr[i])
+			return arr[i] < right.arr[i];
 	}
-	return false;
+	return thisSize < rightSize;
 }
 
 template <typename T>
