@@ -94,6 +94,23 @@ public:
 		clear();
 	}
 
+	void tie() {
+		for(iterator i = begin(); i != end(); i++)
+		{
+			if(i.cell->next == nullptr)
+			{
+				i.cell->next = head;
+				break;
+			}
+		}
+	}
+
+	void untie() {
+		iterator it = begin();
+		for(int i = 0; i < size - 1; i++) {it++;}
+		it.cell->next = nullptr;
+	}
+
 	// Add element to the top of the list
 	void push_front(T value)
 	{
@@ -201,7 +218,7 @@ public:
 		Cell* cell_it = it.native_pointer();
 		Cell* cell_erase = cell_it->next;
 		Cell* cell_next = cell_erase->next;
-		
+
 		cell_it->next = cell_next;
 		delete cell_erase;
 
@@ -457,7 +474,7 @@ std::ostream& operator << (std::ostream& stream, const SLinkedList<T>& lst)
 
 	for (auto& value : lst)
 	{
-		stream << value << "\n";
+		stream << value << " ";
 	}
 
 	return stream;
