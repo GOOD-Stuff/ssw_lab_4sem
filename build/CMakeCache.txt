@@ -144,7 +144,7 @@ CMAKE_PROJECT_DESCRIPTION:STATIC=
 CMAKE_PROJECT_HOMEPAGE_URL:STATIC=
 
 //Value Computed by CMake
-CMAKE_PROJECT_NAME:STATIC=lab_01
+CMAKE_PROJECT_NAME:STATIC=lab_02
 
 //Path to a program.
 CMAKE_RANLIB:FILEPATH=/home/linuxbrew/.linuxbrew/bin/ranlib
@@ -219,6 +219,12 @@ lab_01_BINARY_DIR:STATIC=/home/nikita/labs/ssw_lab_4sem/build
 
 //Value Computed by CMake
 lab_01_SOURCE_DIR:STATIC=/home/nikita/labs/ssw_lab_4sem
+
+//Value Computed by CMake
+lab_02_BINARY_DIR:STATIC=/home/nikita/labs/ssw_lab_4sem/build
+
+//Value Computed by CMake
+lab_02_SOURCE_DIR:STATIC=/home/nikita/labs/ssw_lab_4sem
 
 
 ########################
