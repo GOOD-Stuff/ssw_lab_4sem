@@ -3,12 +3,15 @@
 #include "doubleList/boubleListFunctions.h"
 #include "list/SLinkedListFunctions.h"
 #include "list/SLinkedList.h"
+#include "ringBuffer/CircularBuffer.h"
+#include "ringBuffer/CircularBufferFunctions.h"
 #include "timer.h"
 
 using namespace std;
 
 void testDoubleList(int);
 void testList(int);
+void testBuffer(int);
 
 int rand(int min, int max) {
 	return min + rand() % (max - min);
@@ -20,13 +23,101 @@ string boolToString(bool val) {
 
 int main(int argc, char** argv)
 {
-    // cout << "\n*******************************************\n";
-	// cout << "Тест double_list\n\n";
-    // testDoubleList(20);
+    cout << "\n*******************************************\n";
+	cout << "Тест double_list\n\n";
+    testDoubleList(20);
 
     cout << "\n*******************************************\n";
 	cout << "Тест list\n\n";
     testList(20);
+
+    cout << "\n*******************************************\n";
+	cout << "Тест buffer\n\n";
+    testBuffer(20);
+}
+
+// TEST buffer
+void testBufferPush(int, CircularBuffer<int>&);
+void testBufferPop(CircularBuffer<int>&);
+void testBufferComparisons(CircularBuffer<int>&);
+void testBufferJobFunctions(CircularBuffer<int>&);
+
+void testBuffer(int size) {
+    CircularBuffer<int> buffer(size);
+
+    cout << "Добавление " << size << " элементов" << "\n";
+    testBufferPush(size - 1, buffer);
+
+    cout << "\nВыталкивание элемента\n";
+    testBufferPop(buffer);
+
+    cout << "\nОператоры сравнения\n";
+	testBufferComparisons(buffer);
+
+    cout << "\nФункции из задания\n";
+	testBufferJobFunctions(buffer);
+}
+
+void testBufferPush(int count, CircularBuffer<int>& buffer) {
+    Timer t;
+
+    for(int i = 0; i < count; i++)
+        buffer.push(rand(0, 100));
+
+    cout << "Время добавления элементов в buffer: " << t.getTime() << "\n";
+    cout << "Итоговый buffer: " << buffer << "\n";
+
+    CircularBuffer<int>::iterator it = buffer.begin();
+    it++;
+    it++;
+    it++;
+    cout << "Добавление элемента перед: " << *it << "\n";
+    buffer.insert(it, rand(0, 100));
+    cout << "Итоговый buffer: " << buffer << "\n";
+}
+
+void testBufferPop(CircularBuffer<int>& buffer) {
+    cout << "Первй элемент до выталкивания: " << *buffer.begin() << "\n";
+    buffer.pop();
+    cout << "Первй элемент после выталкивания: " << *buffer.begin() << "\n";
+
+    CircularBuffer<int>::iterator it = buffer.begin();
+    cout << "Удаляем первый элемент: " << *it << "\n";
+    buffer.erase(it);
+    cout << "Первый элемент полсе удаления: " << *buffer.begin() << "\n";
+}
+
+void testBufferComparisons(CircularBuffer<int>& buffer) {
+    CircularBuffer<int> buffer_2(buffer.max_count());
+
+	for(int i = 0; i < buffer.count(); i++)
+		buffer_2.push(rand(0, 100));
+
+	cout << "buffer_2 для сравнения: " << buffer_2 << "\n";
+
+	Timer t1;
+
+	cout << "Операторы сравнения buffer\n"
+		<< "  buffer == buffer_2: " << boolToString(buffer == buffer_2) << "\n"
+		<< "  buffer != buffer_2: " << boolToString(buffer != buffer_2) << "\n"
+		<< "  buffer <  buffer_2: " << boolToString(buffer < buffer_2) << "\n"
+		<< "  buffer >  buffer_2: " << boolToString(buffer > buffer_2) << "\n"
+		<< "  buffer <= buffer_2: " << boolToString(buffer <= buffer_2) << "\n"
+		<< "  buffer >= buffer_2: " << boolToString(buffer >= buffer_2) << "\n";
+	cout << "Время сравнения: " << t1.getTime() << "\n";
+}
+
+void testBufferJobFunctions(CircularBuffer<int>& buffer) {
+    CircularBuffer<int>::iterator it = buffer.end();
+    int num = 0;
+
+    while(it == buffer.end()) {
+        cout << "Ищем число " << num << "\n";
+        it = search(buffer, num++);
+    }
+
+    cout << "Число " << num - 1 << " найдено" << "\n";
+    cout << "Слелующее за ним число: " << *(++it) << "\n";
 }
 
 // TEST List
@@ -68,6 +159,7 @@ void testListPush(int count, SLinkedList<int>& list) {
     it++;
     it++;
     it++;
+
     cout << "Добавление элемента после: " << *it << "\n";
     list.insert(it, rand(0, 100));
     cout << "Итоговый list: " << list << "\n";
@@ -206,7 +298,7 @@ void testDoubleListJobFunctions(DoubleList<int>& list) {
     cout << "Результат выполнения метода isLoop: " << isLoop(list) << "\n";
     list.untie();
 
-    Iterator<int> it = nullptr;
+    DoubleList<int>::iterator it = nullptr;
     int num = 0;
     while(it == nullptr) {
         cout << "Ищем число " << num << "\n";

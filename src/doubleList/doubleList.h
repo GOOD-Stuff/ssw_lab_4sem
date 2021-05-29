@@ -4,108 +4,22 @@
 #define CLASS_DOUBLE_LIST_H
 
 template<class T>
-struct Node {
-    Node<T>* prev;
-    Node<T>* next;
-    T item;
-};
-
-template<class T>
-class Iterator {
-    private:
-        Node<T>* node {nullptr};
-    public:
-        Iterator(Node<T>* ptr) : node(ptr) {};
-
-        Iterator& operator ++ ()
-		{
-            if(node == nullptr)
-			    throw std::runtime_error("The iterator is empty");
-
-			node = node->next;
-			return *this;
-		}
-
-		Iterator operator ++ (int)
-		{
-			if(node == nullptr)
-			    throw std::runtime_error("The iterator is empty");
-
-			Node<T>* oldNode = node;
-			node = node->next;
-			return oldNode;
-		}
-
-        Iterator& operator -- ()
-		{
-            if(node == nullptr)
-			    throw std::runtime_error("The iterator is empty");
-
-			node = node->prev;
-			return *this;
-		}
-
-		Iterator operator -- (int)
-		{
-			if(node == nullptr)
-			    throw std::runtime_error("The iterator is empty");
-
-			Node<T>* oldNode = node;
-			node = node->prev;
-			return oldNode;
-		}
-
-        Iterator operator - (int offset)
-		{
-			if(node == nullptr)
-			    throw std::runtime_error("The iterator is empty");
-
-			Iterator iterator(node);
-
-			for (int i = 0; i < offset; i++)
-				iterator--;
-
-			return iterator;
-		}
-
-		Iterator operator + (int offset)
-		{
-			if(node == nullptr)
-			    throw std::runtime_error("The iterator is empty");
-
-			Iterator iterator(node);
-
-			for (int i = 0; i < offset; i++)
-				iterator++;
-
-			return iterator;
-		}
-
-		T operator * ()
-		{
-			if(node == nullptr)
-			    throw std::runtime_error("The iterator is empty");
-
-			return node->item;
-		}
-
-		bool operator == (const Iterator& iterator) const {
-            return node == iterator.node;
-        }
-
-		bool operator != (const Iterator& iterator) const {
-            return node != iterator.node;
-        }
-};
-
-template<class T>
 class DoubleList {
     private:
-        Node<T>* first {nullptr};
-        Node<T>* last {nullptr};
+        struct Node {
+            Node* prev;
+            Node* next;
+            T item;
+        };
+
+        Node* first {nullptr};
+        Node* last {nullptr};
         int size {0};
-        Node<T>* getNodeByIndex(int) const;
+        Node* getNodeByIndex(int) const;
     public:
+        class iterator;
+	    friend class iterator;
+
         ~DoubleList();
         void pushFront(T);
         void pushBack(T);
@@ -113,8 +27,8 @@ class DoubleList {
         void erase(int);
         void tie();
         void untie();
-        Iterator<T> begin() const;
-        Iterator<T> end() const;
+        iterator begin() const;
+        iterator end() const;
         T popFront();
         T popBack();
         int count() const;
@@ -126,8 +40,95 @@ class DoubleList {
         bool operator<=(const DoubleList<T>& right);
         bool operator>=(const DoubleList<T>& right);
 
-    template<class U>
-    friend std::ostream& operator<<(std::ostream&, const DoubleList<U>&);
+        template<class U>
+        friend std::ostream& operator<<(std::ostream&, const DoubleList<U>&);
+
+        class iterator {
+            private:
+                Node* node {nullptr};
+            public:
+                iterator(Node* ptr) : node(ptr) {};
+
+                iterator& operator ++ ()
+        		{
+                    if(node == nullptr)
+        			    throw std::runtime_error("The iterator is empty");
+
+        			node = node->next;
+        			return *this;
+        		}
+
+        		iterator operator ++ (int)
+        		{
+        			if(node == nullptr)
+        			    throw std::runtime_error("The iterator is empty");
+
+        			Node* oldNode = node;
+        			node = node->next;
+        			return oldNode;
+        		}
+
+                iterator& operator -- ()
+        		{
+                    if(node == nullptr)
+        			    throw std::runtime_error("The iterator is empty");
+
+        			node = node->prev;
+        			return *this;
+        		}
+
+        		iterator operator -- (int)
+        		{
+        			if(node == nullptr)
+        			    throw std::runtime_error("The iterator is empty");
+
+        			Node* oldNode = node;
+        			node = node->prev;
+        			return oldNode;
+        		}
+
+                iterator operator - (int offset)
+        		{
+        			if(node == nullptr)
+        			    throw std::runtime_error("The iterator is empty");
+
+        			iterator iterator(node);
+
+        			for (int i = 0; i < offset; i++)
+        				iterator--;
+
+        			return iterator;
+        		}
+
+        		iterator operator + (int offset)
+        		{
+        			if(node == nullptr)
+        			    throw std::runtime_error("The iterator is empty");
+
+        			iterator iterator(node);
+
+        			for (int i = 0; i < offset; i++)
+        				iterator++;
+
+        			return iterator;
+        		}
+
+        		T operator * ()
+        		{
+        			if(node == nullptr)
+        			    throw std::runtime_error("The iterator is empty");
+
+        			return node->item;
+        		}
+
+        		bool operator == (const iterator& iterator) const {
+                    return node == iterator.node;
+                }
+
+        		bool operator != (const iterator& iterator) const {
+                    return node != iterator.node;
+                }
+        };
 };
 
 template<class T>
@@ -148,7 +149,7 @@ void DoubleList<T>::untie() {
 
 template<class T>
 void DoubleList<T>::pushBack(T item) {
-    Node<T>* nodeItem = new Node<T> {last, nullptr, item};
+    Node* nodeItem = new Node {last, nullptr, item};
 
     if(last)
         last->next = nodeItem;
@@ -161,7 +162,7 @@ void DoubleList<T>::pushBack(T item) {
 
 template<class T>
 void DoubleList<T>::pushFront(T item) {
-    Node<T>* nodeItem = new Node<T> {nullptr, first, item};
+    Node* nodeItem = new Node {nullptr, first, item};
 
     if(first)
         first->prev = nodeItem;
@@ -179,8 +180,8 @@ void DoubleList<T>::insert(int index, T item) {
     else if (index == size - 1)
         pushBack(item);
     else {
-        Node<T>* currentElementByIndex = getNodeByIndex(index);
-        Node<T>* newElementByIndex = new Node<T> {currentElementByIndex->prev, currentElementByIndex, item};
+        Node* currentElementByIndex = getNodeByIndex(index);
+        Node* newElementByIndex = new Node {currentElementByIndex->prev, currentElementByIndex, item};
         currentElementByIndex->prev->next = newElementByIndex;
         currentElementByIndex->prev = newElementByIndex;
         size++;
@@ -194,7 +195,7 @@ void DoubleList<T>::erase(int index) {
     else if (index == size - 1)
         popBack();
     else {
-        Node<T>* currentElementByIndex = getNodeByIndex(index);
+        Node* currentElementByIndex = getNodeByIndex(index);
         currentElementByIndex->prev->next = currentElementByIndex->next;
         currentElementByIndex->next->prev = currentElementByIndex->prev;
         delete currentElementByIndex;
@@ -207,7 +208,7 @@ T DoubleList<T>::popBack() {
     if(size == 0)
         throw new std::runtime_error("List is empty");
 
-    Node<T>* itemNode = last;
+    Node* itemNode = last;
     T item = itemNode->item;
 
     if(itemNode->prev)
@@ -227,7 +228,7 @@ T DoubleList<T>::popFront() {
     if(size == 0)
         throw new std::runtime_error("List is empty");
 
-    Node<T>* itemNode = first;
+    Node* itemNode = first;
     T item = itemNode->item;
 
     if(itemNode->next)
@@ -243,12 +244,12 @@ T DoubleList<T>::popFront() {
 }
 
 template<class T>
-Node<T>* DoubleList<T>::getNodeByIndex(int index) const{
+typename DoubleList<T>::Node* DoubleList<T>::getNodeByIndex(int index) const{
     if(index >= size || index < 0)
         throw new std::runtime_error("Going outside the list");
 
     int i = 0;
-    Node<T>* begin = first;
+    Node* begin = first;
 
     while(++i <= index)
         begin = begin->next;
@@ -262,19 +263,19 @@ int DoubleList<T>::count() const {
 }
 
 template<class T>
-Iterator<T> DoubleList<T>::begin() const {
-    return Iterator<T>(first);
+typename DoubleList<T>::iterator DoubleList<T>::begin() const {
+    return iterator(first);
 }
 
 template<class T>
-Iterator<T> DoubleList<T>::end() const {
+typename DoubleList<T>::iterator DoubleList<T>::end() const {
     return nullptr;
 }
 
 template<class T>
 DoubleList<T>::~DoubleList() {
     int i = 0;
-    Node<T>* begin = first;
+    Node* begin = first;
 
     while(++i < size) {
         begin = begin->next;

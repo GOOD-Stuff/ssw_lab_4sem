@@ -9,9 +9,6 @@ template <class T>
 class CircularBuffer
 {
 private:
-	class iterator;
-	friend class iterator;
-	
 	struct Node
 	{
 		T data;
@@ -25,7 +22,7 @@ private:
 
 	using PNode = Node*;
 	using PBuffer = CircularBuffer<T>*;
-	
+
 	int current_size {0};
 	int max_size {0};
 
@@ -33,6 +30,9 @@ private:
 	Node* tail {nullptr};
 
 public:
+	class iterator;
+	friend class iterator;
+
 	explicit CircularBuffer(int size)
 	{
 		if (size == 0)
@@ -51,6 +51,12 @@ public:
 		}
 	}
 
+	~CircularBuffer()
+	{
+		while (current_size != 0)
+			pop();
+	}
+
 	void push(T data)
 	{
 		PNode node = new Node(data);
@@ -60,7 +66,7 @@ public:
 			head = tail = node;
 			return;
 		}
-		
+
 		tail->next = node;
 		node->prev = tail;
 		tail = node;
@@ -82,7 +88,7 @@ public:
 
 		head = head->next;
 		delete old_head;
-		
+
 		current_size--;
 	}
 
@@ -94,13 +100,13 @@ public:
 		}
 
 		bool is_begin = it == begin();
-		
+
 		if (is_begin && current_size == max_size)
 		{
 			it++;
 			erase(begin());
 		}
-		
+
 		PNode prev_node = it.current_node->prev;
 		PNode new_node = new Node(data);
 
@@ -108,7 +114,7 @@ public:
 		{
 			prev_node->next = new_node;
 		}
-		
+
 		new_node->prev = prev_node;
 		new_node->next = it.current_node;
 
@@ -129,14 +135,14 @@ public:
 		{
 			throw std::runtime_error("Circular buffer is empty!");
 		}
-		
+
 		if (it == begin())
 		{
 			return pop();
 		}
 
 		it.iterator_overflow_control();
-		
+
 		bool is_end = it == --end();
 
 		PNode prev_node = it.current_node->prev;
@@ -182,23 +188,6 @@ public:
 		return iterator(const_cast<PBuffer>(this), nullptr);
 	}
 
-	iterator find(T data) const
-	{
-		if (current_size == 0)
-		{
-			throw std::runtime_error("Circular buffer is empty!");
-		}
-		
-		iterator it = begin();
-
-		while (it != end() && *it != data)
-		{
-			it++;
-		}
-
-		return it;
-	}
-
 	bool operator == (const CircularBuffer<T>& buffer) const
 	{
 		if (this == std::addressof(buffer))
@@ -221,7 +210,7 @@ public:
 				return false;
 			}
 		}
-		
+
 		return true;
 	}
 
@@ -244,7 +233,7 @@ public:
 		{
 			T& first_data = *it_first++;
 			T& second_data = *it_second++;
-			
+
 			if (first_data != second_data)
 			{
 				return first_data < second_data;
@@ -274,10 +263,10 @@ public:
 	{
 	private:
 		friend class CircularBuffer<T>;
-		
+
 		PBuffer buffer {nullptr};
 		PNode current_node {nullptr};
-		
+
 		iterator(const PBuffer target_buffer, const PNode node): buffer(target_buffer), current_node(node) {}
 
 		void iterator_empty_control() const
@@ -303,7 +292,7 @@ public:
 				throw std::out_of_range("Going beyond the left buffer boundary!");
 			}
 		}
-		
+
 	public:
 		iterator() = default;
 
@@ -311,7 +300,7 @@ public:
 		{
 			iterator_empty_control();
 			iterator_overflow_control();
-			
+
 			current_node = current_node->next;
 			return *this;
 		}
@@ -320,7 +309,7 @@ public:
 		{
 			iterator_empty_control();
 			iterator_overflow_control();
-			
+
 			PNode old_node = current_node;
 			current_node = current_node->next;
 			return iterator(buffer, old_node);
@@ -348,7 +337,7 @@ public:
 				*this = iterator(buffer, buffer->tail);
 				return *this;
 			}
-			
+
 			current_node = current_node->prev;
 			return *this;
 		}
@@ -362,7 +351,7 @@ public:
 			{
 				return iterator(buffer, buffer->tail);
 			}
-			
+
 			PNode old_node = current_node;
 			current_node = current_node->prev;
 			return iterator(buffer, old_node);
@@ -403,7 +392,7 @@ std::ostream& operator << (std::ostream& stream, const CircularBuffer<T>& buffer
 {
 	for (auto& el : buffer)
 	{
-		stream << el << "\n";
+		stream << el << " ";
 	}
 
 	return stream;
