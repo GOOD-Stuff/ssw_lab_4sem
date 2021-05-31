@@ -51,8 +51,8 @@ public:
 	// Add item to back
 	void push_back(T value);
 
-	// Insert element in any position of container (AFTER *it!)
-	void insert(const Iterator& it, T value);
+	// Insert element in any position of container
+	void insert(Iterator it, T value);
 
 	// Remove first element
 	void pop_front();
@@ -60,14 +60,14 @@ public:
 	// Remove last element
 	void pop_back();
 
-	// Remove element from any position of container (AFTER *it!)
-	void erase(const Iterator& it);
+	// Remove element from any position of container
+	void erase(Iterator it);
 
 	// Get iterator to begin list
-	Iterator begin() const { return head; }
+	Iterator begin() const { return Iterator(head, const_cast<ForwardList<T>*>(this)); }
 
 	// Get iterator to end list
-	Iterator end() const { return nullptr; }
+	Iterator end() const { return Iterator(nullptr, const_cast<ForwardList<T>*>(this)); }
 
 	// Get elements count
 	size_t count() const { return size; }
@@ -88,7 +88,7 @@ public:
 	ForwardList<T>& operator = (const ForwardList<T>& list);
 
 	// Move operator
-	ForwardList<T>& operator = (ForwardList<T>&& list);
+	ForwardList<T>& operator = (ForwardList<T>&& list) noexcept;
 
 	// Lexicographic comparison operators
 	bool operator == (const ForwardList<T>& list) const;
@@ -110,8 +110,32 @@ public:
 		// Pointer to a container cell
 		Node* ptr {nullptr};
 
+		// Pointer to a current List
+		ForwardList<T>* list {nullptr};
+		
 		// Private constructor
-		Iterator(Node* p) : ptr(p) {}
+		Iterator(Node* p, ForwardList<T>* lst) : ptr(p), list(lst) {}
+
+		// Exceptions control
+		void has_errors_control()
+		{
+			throw_if(list == nullptr, "The iterator is not bound to a list!");
+			throw_if(list->size == 0, "The iterated list is empty!");
+			throw_if(ptr == nullptr, "Trying to work with empty pointer!");
+		}
+
+		Node* get_prev_node()
+		{
+			has_errors_control();
+			throw_if(ptr == list->head, "Attempt to go outside the list!");
+			
+			Node* node = list->head;
+
+			while (node->next != ptr)
+				node = node->next;
+
+			return node;
+		}
 
 	public:
 		Iterator() = default;
@@ -119,7 +143,7 @@ public:
 		// Prefix operator ++
 		Iterator& operator ++ ()
 		{
-			throw_if(ptr == nullptr, "Trying to work with empty pointer!");
+			has_errors_control();
 
 			ptr = ptr->next;
 			return *this;
@@ -128,30 +152,17 @@ public:
 		// Postfix operator ++
 		Iterator operator ++ (int)
 		{
-			throw_if(ptr == nullptr, "Trying to work with empty pointer!");
+			has_errors_control();
 
 			Node* old_ptr = ptr;
 			ptr = ptr->next;
-			return old_ptr;
-		}
-
-		// Shift operator
-		Iterator operator + (size_t offset)
-		{
-			throw_if(ptr == nullptr, "Trying to work with empty pointer!");
-
-			Iterator it(ptr);
-
-			for (size_t i = 0; i < offset; i++)
-				++it;
-
-			return it;
+			return Iterator(old_ptr, list);
 		}
 
 		// Operator for getting data
 		T& operator * ()
 		{
-			throw_if(ptr == nullptr, "Trying to work with empty pointer!");
+			has_errors_control();
 			return ptr->data;
 		}
 
@@ -197,19 +208,26 @@ void ForwardList<T>::push_back(T value)
 }
 
 template <typename T>
-void ForwardList<T>::insert(const Iterator& it, T value)
+void ForwardList<T>::insert(Iterator it, T value)
 {
 	throw_if(size == 0, "Attempt to insert item to empty list!");
 
-	if (const_cast<Iterator&>(it) == end())
-		return push_back(value);
+	if (it == begin())
+	{
+		push_front(value);
+		return;
+	}
+	else if (it == end())
+	{
+		push_back(value);
+		return;
+	}
 
-	Node* old_next_node = it.ptr->next;
-	Node* new_node = new Node(value);
-
-	it.ptr->next = new_node;
-	new_node->next = old_next_node;
-
+	Node* node = new Node(value);
+	Node* prev_node = it.get_prev_node();
+	prev_node->next = node;
+	node->next = it.ptr;
+	
 	size++;
 }
 
@@ -249,15 +267,18 @@ void ForwardList<T>::pop_back()
 }
 
 template <typename T>
-void ForwardList<T>::erase(const Iterator& it)
+void ForwardList<T>::erase(Iterator it)
 {
 	throw_if(size == 0, "Attempt to erase item from empty list!");
 
-	Node* node_for_delete = it.ptr->next;
-	Node* next_node = node_for_delete->next;
+	if (it == begin())
+	{
+		pop_front();
+		return;
+	}
 
-	delete node_for_delete;
-	it.ptr->next = next_node;
+	it.get_prev_node()->next = it.ptr->next;
+	delete it.ptr;
 
 	size--;
 }
@@ -362,7 +383,7 @@ ForwardList<T>& ForwardList<T>::operator = (const ForwardList<T>& list)
 }
 
 template <typename T>
-ForwardList<T>& ForwardList<T>::operator = (ForwardList<T>&& list)
+ForwardList<T>& ForwardList<T>::operator = (ForwardList<T>&& list) noexcept
 {
 	if (&list == this)
 		return *this;
@@ -453,9 +474,6 @@ void ForwardList<T>::throw_if(bool condition, const char* message)
 template <typename T>
 std::ostream& operator << (std::ostream& out, const ForwardList<T>& list)
 {
-	if (list.count() == 0)
-		throw "Attempt to display empty list!";
-
 	for (auto& element : list)
 		out << element << "\n";
 
