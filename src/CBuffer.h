@@ -14,15 +14,14 @@ private:
 	size_t max_size;
 
 	// Private move constructor
-	CBuffer(List<T>&& lst) : max_size(lst.count()), list(std::move(lst)) {}
+	CBuffer(List<T>&& lst) : list(std::move(lst)), max_size(lst.count()) {}
 
 public:
-	class Iterator;
-
+	using Iterator = typename List<T>::Iterator;
 	explicit CBuffer(size_t capacity) : max_size(capacity) {}
 
 	// Constructor with support initializer list
-	CBuffer(const std::initializer_list<T>& lst) : max_size(lst.size()), list(lst) {}
+	CBuffer(const std::initializer_list<T>& lst) : list(lst), max_size(lst.size()) {}
 
 	// Copy constructor
 	CBuffer(const CBuffer<T>& buffer) { *this = buffer; }
@@ -43,10 +42,10 @@ public:
 	void erase(const Iterator& it) { list.erase(it); }
 
 	// Get iterator to begin buffer
-	Iterator begin() const { return reinterpret_cast<Iterator&>(list.begin()); }
+	Iterator begin() const { return list.begin(); }
 
 	// Get iterator to end buffer
-	Iterator end() const { return reinterpret_cast<Iterator&>(list.end()); }
+	Iterator end() const { return list.end(); }
 
 	// Get current elements count
 	size_t count() const { return list.count(); }
@@ -81,19 +80,6 @@ public:
 
 	bool operator <= (const CBuffer<T>& buffer) const { return list <= buffer.list; }
 	bool operator >= (const CBuffer<T>& buffer) const { return list >= buffer.list; }
-
-	// Class for convenient container passage
-	class Iterator : public List<T>::Iterator
-	{
-	public:
-		// Don't kill me for this horror...
-		Iterator& operator ++ () { return reinterpret_cast<Iterator&>(List<T>::Iterator::operator ++ ()); }
-		Iterator operator ++ (int) { return reinterpret_cast<Iterator&>(List<T>::Iterator::operator ++ (0)); }
-		Iterator operator + (size_t offset) { return reinterpret_cast<Iterator&>(List<T>::Iterator::operator + (offset)); }
-		Iterator& operator -- () { return reinterpret_cast<Iterator&>(List<T>::Iterator::operator -- ()); }
-		Iterator operator -- (int) { return reinterpret_cast<Iterator&>(List<T>::Iterator::operator -- (0)); }
-		Iterator operator - (size_t offset) { return reinterpret_cast<Iterator&>(List<T>::Iterator::operator - (offset)); }
-	};
 };
 
 template <typename T>
