@@ -11,8 +11,6 @@ class List
 private:
 	friend class Iterator;
 	static void throw_if(bool condition, const char* message);
-	void destroy();
-
 
 	// List cell (data value, pointer to prev cell, pointer to next cell)
 	struct Node
@@ -33,7 +31,7 @@ private:
 	Node* head {nullptr};
 
 	// Pointer to last element
-	Node* tail {new Node};
+	Node* tail {nullptr};
 
 public:
 	class Iterator;
@@ -49,7 +47,7 @@ public:
 	// Move constructor
 	List(List<T>&& list) noexcept { *this = std::move(list); }
 
-	~List() { destroy(); }
+	~List() { clear(); }
 
 	// Add item to front
 	void push_front(T value);
@@ -58,7 +56,7 @@ public:
 	void push_back(T value);
 
 	// Insert element in any position of container
-	void insert(const Iterator& it, T value);
+	void insert(Iterator it, T value);
 
 	// Remove first element
 	void pop_front();
@@ -67,13 +65,13 @@ public:
 	void pop_back();
 
 	// Remove element from any position of container
-	void erase(const Iterator& it);
+	void erase(Iterator it);
 
 	// Get iterator to begin list
-	Iterator begin() const { return (head != nullptr) ? head : tail; }
+	Iterator begin() const { return Iterator(head, const_cast<List<T>*>(this)); }
 
 	// Get iterator to end list
-	Iterator end() const { return tail; }
+	Iterator end() const { return Iterator(nullptr, const_cast<List<T>*>(this)); }
 
 	// Get elements count
 	size_t count() const { return size; }
@@ -116,17 +114,28 @@ public:
 		// Pointer to a container cell
 		Node* ptr {nullptr};
 
-		// Private constructor
-		Iterator(Node* p) : ptr(p) {}
+		// Pointer to a current List
+		List<T>* list {nullptr};
 
+		// Private constructor
+		Iterator(Node* p, List<T>* lst) : ptr(p), list(lst) {}
+
+		// Exceptions control
+		void has_list_control()
+		{
+			throw_if(list == nullptr, "The iterator is not bound to a list!");
+			throw_if(list->size == 0, "The iterated list is empty!");
+		}
+	
 	public:
 		Iterator() = default;
 
 		// Prefix operator ++
 		Iterator& operator ++ ()
 		{
-			throw_if(ptr == nullptr, "Trying to work with empty pointer!");
-
+			has_list_control();
+			throw_if(ptr == nullptr, "Attempt to go off the list!");
+			
 			ptr = ptr->next;
 			return *this;
 		}
@@ -134,19 +143,18 @@ public:
 		// Postfix operator ++
 		Iterator operator ++ (int)
 		{
-			throw_if(ptr == nullptr, "Trying to work with empty pointer!");
+			has_list_control();
+			throw_if(ptr == nullptr, "Attempt to go off the list!");
 
 			Node* old_ptr = ptr;
 			ptr = ptr->next;
-			return old_ptr;
+			return Iterator(old_ptr, list);
 		}
 
 		// Shift operator
 		Iterator operator + (size_t offset)
 		{
-			throw_if(ptr == nullptr, "Trying to work with empty pointer!");
-
-			Iterator it(ptr);
+			Iterator it = *this;
 
 			for (size_t i = 0; i < offset; i++)
 				++it;
@@ -157,8 +165,15 @@ public:
 		// Prefix operator ++
 		Iterator& operator -- ()
 		{
-			throw_if(ptr == nullptr, "Trying to work with empty pointer!");
+			has_list_control();
+			throw_if(ptr == list->head, "Attempt to go off the list!");
 
+			if (ptr == nullptr)
+			{
+				*this = Iterator(list->tail, list);
+				return *this;
+			}
+			
 			ptr = ptr->prev;
 			return *this;
 		}
@@ -166,19 +181,21 @@ public:
 		// Postfix operator ++
 		Iterator operator -- (int)
 		{
-			throw_if(ptr == nullptr, "Trying to work with empty pointer!");
+			has_list_control();
+			throw_if(ptr == list->head, "Attempt to go off the list!");
 
+			if (ptr == nullptr)
+				return Iterator(list->tail, list);
+			
 			Node* old_ptr = ptr;
 			ptr = ptr->prev;
-			return old_ptr;
+			return Iterator(old_ptr, list);
 		}
 
 		// Shift operator
 		Iterator operator - (size_t offset)
 		{
-			throw_if(ptr == nullptr, "Trying to work with empty pointer!");
-
-			Iterator it(ptr);
+			Iterator it = *this;
 
 			for (size_t i = 0; i < offset; i++)
 				--it;
@@ -189,6 +206,7 @@ public:
 		// Operator for getting data
 		T& operator * ()
 		{
+			has_list_control();
 			throw_if(ptr == nullptr, "Trying to work with empty pointer!");
 			return ptr->data;
 		}
@@ -219,10 +237,7 @@ void List<T>::push_front(T value)
 		old_head->prev = head;
 	
 	if (size == 0)
-	{
-		tail->prev = head;
-		head->next = tail;
-	}
+		tail = head;
 
 	size++;
 }
@@ -231,29 +246,37 @@ template <typename T>
 void List<T>::push_back(T value)
 {
 	if (size == 0)
-		return push_front(value);
+	{
+		push_front(value);
+		return;
+	}
 
 	Node* node = new Node(value);
-	Node* tail_prev = tail->prev;
+	Node* old_tail = tail;
 
-	tail_prev->next = node;
-	node->prev = tail_prev;
-
-	node->next = tail;
-	tail->prev = node;
-
+	tail = node;
+	
+	node->prev = old_tail;
+	old_tail->next = tail;
+	
 	size++;
 }
 
 template <typename T>
-void List<T>::insert(const Iterator& it, T value)
+void List<T>::insert(Iterator it, T value)
 {
 	throw_if(size == 0, "Attempt to insert item to empty list!");
 
-	if (const_cast<Iterator&>(it) == begin())
-		return push_front(value);
-	else if (const_cast<Iterator&>(it) == begin() + size)
-		return push_back(value);
+	if (it == begin())
+	{
+		push_front(value);
+		return;
+	}
+	else if (it == end())
+	{
+		push_back(value);
+		return;
+	}
 
 	Node* new_node = new Node(value);
 	Node* left_node = it.ptr->prev;
@@ -279,7 +302,6 @@ void List<T>::pop_front()
 		head->prev = nullptr;
 
 	delete old_head;
-
 	size--;
 }
 
@@ -289,26 +311,35 @@ void List<T>::pop_back()
 	throw_if(size == 0, "Attempt to delete item from empty list!");
 
 	if (size == 1)
-		return pop_front();
+	{
+		pop_front();
+		return;
+	}
 
-	Node* old_prev_tail = tail->prev;
-	tail->prev = old_prev_tail->prev;
-	old_prev_tail->prev->next = tail;
-
-	delete old_prev_tail;
-
+	Node* old_tail = tail;
+	
+	tail = tail->prev;
+	tail->next = nullptr;
+	
+	delete old_tail;
 	size--;
 }
 
 template <typename T>
-void List<T>::erase(const Iterator& it)
+void List<T>::erase(Iterator it)
 {
 	throw_if(size == 0, "Attempt to erase item from empty list!");
 
-	if (const_cast<Iterator&>(it) == begin())
-		return pop_front();
-	else if (const_cast<Iterator&>(it) == end() - 1)
-		return pop_back();
+	if (it == begin())
+	{
+		pop_front();
+		return;
+	}
+	else if (it == end() - 1)
+	{
+		pop_back();
+		return;
+	}
 
 	Node* left_node = it.ptr->prev;
 	Node* right_node = it.ptr->next;
@@ -397,16 +428,16 @@ List<T>& List<T>::operator = (List<T>&& list) noexcept
 {
 	if (&list == this)
 		return *this;
-	
-	destroy();
 
+	clear();
+	
 	head = list.head;
 	size = list.size;
 	tail = list.tail;
 
 	list.head = nullptr;
 	list.size = 0;
-	list.tail = new Node;
+	list.tail = nullptr;
 	
 	return *this;
 }
@@ -482,20 +513,10 @@ void List<T>::throw_if(bool condition, const char* message)
 		throw std::runtime_error(message);
 }
 
-template <typename T>
-void List<T>::destroy()
-{
-	clear();
-	delete tail;
-}
-
 // Output operator
 template <typename T>
 std::ostream& operator << (std::ostream& out, const List<T>& list)
 {
-	if (list.count() == 0)
-		throw "Attempt to display empty list!";
-
 	for (auto& element : list)
 		out << element << "\n";
 
