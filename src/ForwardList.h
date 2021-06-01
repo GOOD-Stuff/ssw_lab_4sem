@@ -231,6 +231,7 @@ void ForwardList<T>::insert(Iterator it, T value)
 
 	Node* node = new Node(value);
 	Node* prev_node = it.get_prev_node();
+	
 	prev_node->next = node;
 	node->next = it.ptr;
 	
@@ -244,8 +245,8 @@ void ForwardList<T>::pop_front()
 
 	Node* old_head = head;
 	head = head->next;
+	
 	delete old_head;
-
 	size--;
 }
 
@@ -321,7 +322,6 @@ ForwardList<T> ForwardList<T>::merge_and_sort(const ForwardList<T>& list) const
 		new_list.push_front(temp_storage[i]);
 
 	delete[] temp_storage;
-
 	return new_list;
 }
 

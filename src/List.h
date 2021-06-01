@@ -380,7 +380,6 @@ List<T> List<T>::merge_and_sort(const List<T>& list) const
 		new_list.push_front(temp_storage[i]);
 
 	delete[] temp_storage;
-
 	return new_list;
 }
 
