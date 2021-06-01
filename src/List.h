@@ -68,10 +68,10 @@ public:
 	void erase(Iterator it);
 
 	// Get iterator to begin list
-	Iterator begin() const { return Iterator(head, const_cast<List<T>*>(this)); }
+	Iterator begin() const { return Iterator(head, this); }
 
 	// Get iterator to end list
-	Iterator end() const { return Iterator(nullptr, const_cast<List<T>*>(this)); }
+	Iterator end() const { return Iterator(nullptr, this); }
 
 	// Get elements count
 	size_t count() const { return size; }
@@ -115,10 +115,10 @@ public:
 		Node* ptr {nullptr};
 
 		// Pointer to a current List
-		List<T>* list {nullptr};
+		const List<T>* list {nullptr};
 
 		// Private constructor
-		Iterator(Node* p, List<T>* lst) : ptr(p), list(lst) {}
+		Iterator(Node* p, const List<T>* lst) : ptr(p), list(lst) {}
 
 		// Exceptions control
 		void has_list_control() const

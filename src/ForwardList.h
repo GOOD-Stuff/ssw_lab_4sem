@@ -64,10 +64,10 @@ public:
 	void erase(Iterator it);
 
 	// Get iterator to begin list
-	Iterator begin() const { return Iterator(head, const_cast<ForwardList<T>*>(this)); }
+	Iterator begin() const { return Iterator(head, this); }
 
 	// Get iterator to end list
-	Iterator end() const { return Iterator(nullptr, const_cast<ForwardList<T>*>(this)); }
+	Iterator end() const { return Iterator(nullptr, this); }
 
 	// Get elements count
 	size_t count() const { return size; }
@@ -111,10 +111,10 @@ public:
 		Node* ptr {nullptr};
 
 		// Pointer to a current List
-		ForwardList<T>* list {nullptr};
+		const ForwardList<T>* list {nullptr};
 		
 		// Private constructor
-		Iterator(Node* p, ForwardList<T>* lst) : ptr(p), list(lst) {}
+		Iterator(Node* p, const ForwardList<T>* lst) : ptr(p), list(lst) {}
 
 		// Exceptions control
 		void has_errors_control() const
