@@ -175,8 +175,11 @@ public:
 template <typename T>
 ForwardList<T>::ForwardList(const std::initializer_list<T>& list)
 {
-	for (auto& element : list)
-		push_back(element);
+	auto it = list.end() - 1;
+	size_t i = 0;
+	
+	while (i++ < list.size())
+		push_front(*it--);
 }
 
 template <typename T>
