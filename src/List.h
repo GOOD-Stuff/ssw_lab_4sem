@@ -121,7 +121,7 @@ public:
 		Iterator(Node* p, List<T>* lst) : ptr(p), list(lst) {}
 
 		// Exceptions control
-		void has_list_control()
+		void has_list_control() const
 		{
 			throw_if(list == nullptr, "The iterator is not bound to a list!");
 			throw_if(list->size == 0, "The iterated list is empty!");

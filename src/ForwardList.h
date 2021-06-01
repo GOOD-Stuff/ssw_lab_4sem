@@ -117,14 +117,14 @@ public:
 		Iterator(Node* p, ForwardList<T>* lst) : ptr(p), list(lst) {}
 
 		// Exceptions control
-		void has_errors_control()
+		void has_errors_control() const
 		{
 			throw_if(list == nullptr, "The iterator is not bound to a list!");
 			throw_if(list->size == 0, "The iterated list is empty!");
 			throw_if(ptr == nullptr, "Trying to work with empty pointer!");
 		}
 
-		Node* get_prev_node()
+		Node* get_prev_node() const
 		{
 			has_errors_control();
 			throw_if(ptr == list->head, "Attempt to go outside the list!");
@@ -195,7 +195,10 @@ template <typename T>
 void ForwardList<T>::push_back(T value)
 {
 	if (size == 0)
-		return push_front(value);
+	{
+		push_front(value);
+		return;
+	}
 
 	Node* node = new Node(value);
 	Node* it = head;
@@ -249,7 +252,10 @@ void ForwardList<T>::pop_back()
 	throw_if(size == 0, "Attempt to delete item from empty list!");
 
 	if (size == 1)
-		return pop_front();
+	{
+		pop_front();
+		return;
+	}
 
 	Node* it = head;
 	Node* it_prev = nullptr;
