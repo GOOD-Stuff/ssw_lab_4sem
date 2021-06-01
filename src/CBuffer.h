@@ -36,10 +36,10 @@ public:
 	void pop() { list.pop_front(); }
 
 	// Insert element in any position of container
-	void insert(const Iterator& it, T value);
+	void insert(Iterator it, T value);
 
 	// Remove element from any position of container
-	void erase(const Iterator& it) { list.erase(it); }
+	void erase(Iterator it) { list.erase(it); }
 
 	// Get iterator to begin buffer
 	Iterator begin() const { return list.begin(); }
@@ -92,9 +92,9 @@ void CBuffer<T>::push(T value)
 }
 
 template <typename T>
-void CBuffer<T>::insert(const Iterator& it, T value)
+void CBuffer<T>::insert(Iterator it, T value)
 {
-	bool is_begin = const_cast<Iterator&>(it) == begin();
+	bool is_begin = it == begin();
 
 	list.insert(it, value);
 
