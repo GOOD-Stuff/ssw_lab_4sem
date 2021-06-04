@@ -251,228 +251,228 @@ public:
 	}
 
 
-		void clear()
+	void clear()
+	{
+		while (size != 0)
 		{
-			while (size != 0)
-			{
-				pop_front();
-			}
+			pop_front();
+		}
+	}
+
+	DoubleList<T>& operator = (const DoubleList<T> & lst)
+	{
+		if (this == std::addressof(lst))
+		{
+			return *this;
 		}
 
-		DoubleList<T>& operator = (const DoubleList<T> & lst)
+		clear();
+
+		for (auto value : lst)
 		{
-			if (this == std::addressof(lst))
-			{
-				return *this;
-			}
+			push_back(value);
+		}
+	}
 
-			clear();
-
-			for (auto value : lst)
-			{
-				push_back(value);
-			}
+	DoubleList<T>& operator = (DoubleList<T> && lst) noexcept
+	{
+		if (this == std::addressof(lst))
+		{
+			return *this;
 		}
 
-		DoubleList<T>& operator = (DoubleList<T> && lst) noexcept
-		{
-			if (this == std::addressof(lst))
-			{
-				return *this;
-			}
+		clear();
 
-			clear();
+		head = lst.head;
+		tail = lst.tail;
+		size = lst.size;
 
-			head = lst.head;
-			tail = lst.tail;
-			size = lst.size;
+		lst.head = nullptr;
+		lst.tail = nullptr;
+		lst.size = 0;
+	}
 
-			lst.head = nullptr;
-			lst.tail = nullptr;
-			lst.size = 0;
-		}
+	// Comparison operators
 
-		// Comparison operators
-
-		bool operator == (const DoubleList<T>& obj) const {
-			if (this == &obj) {
-				return true;
-			}
-
-			if (size != obj.size) {
-				return false;
-			}
-
-			iterator it1 = begin();
-			iterator it2 = obj.begin();
-
-			while (it1 != end()) {
-				it1++;
-				it2++;
-				if (*it1 != *it2) {
-					return false;
-				}
-			}
-
+	bool operator == (const DoubleList<T>& obj) const {
+		if (this == &obj) {
 			return true;
 		}
 
-		bool operator != (const DoubleList<T>& obj)  const {
-			return !(*this == obj);
+		if (size != obj.size) {
+			return false;
 		}
 
-		bool operator < (const DoubleList<T>& obj) const {
-			if (this == &obj) {
+		iterator it1 = begin();
+		iterator it2 = obj.begin();
+
+		while (it1 != end()) {
+			it1++;
+			it2++;
+			if (*it1 != *it2) {
 				return false;
 			}
-
-
-			for (iterator it1 = begin(), it2 = obj.begin(); it1 != end(); ++it1, ++it2)
-			{
-				if (*it1 != *it2)
-				{
-					return *it1 < *it2;
-				}
-			}
-
-
-			return size < obj.size;
 		}
 
-		bool operator <= (const DoubleList<T>& obj) const {
-			return *this < obj || *this == obj;
+		return true;
+	}
+
+	bool operator != (const DoubleList<T>& obj)  const {
+		return !(*this == obj);
+	}
+
+	bool operator < (const DoubleList<T>& obj) const {
+		if (this == &obj) {
+			return false;
 		}
 
-		bool operator > (const DoubleList<T>& obj) const {
-			return !(*this < obj) && *this != obj;
-		}
 
-		bool operator >= (const DoubleList<T>& obj) const {
-			return *this > obj || *this == obj;
-		}
-
-		class iterator
+		for (iterator it1 = begin(), it2 = obj.begin(); it1 != end(); ++it1, ++it2)
 		{
-		private:
-			friend class DoubleList<T>;
-
-			DoubleList<T>& lst;
-			node* node_ptr{ nullptr };
-
-			iterator(node* p_node, DoubleList<T>& list_ref) : lst(list_ref), node_ptr(p_node) {}
-
-		public:
-			iterator() = default;
-
-			iterator& operator ++ ()
+			if (*it1 != *it2)
 			{
-				if (node_ptr == nullptr)
-				{
-					throw std::runtime_error("Current node is empty!");
-				}
-
-				node_ptr = node_ptr->next;
-				return *this;
+				return *it1 < *it2;
 			}
-
-			iterator operator ++ (int)
-			{
-				if (node_ptr == nullptr)
-				{
-					throw std::runtime_error("Current node is empty!");
-				}
-
-				node* old_ptr = node_ptr;
-				node_ptr = node_ptr->next;
-				return iterator(old_ptr, lst);
-			}
-
-			iterator& operator -- ()
-			{
-				if (node_ptr == nullptr)
-				{
-					node_ptr = lst.tail;
-					return *this;
-				}
-
-				node_ptr = node_ptr->prev;
-				return *this;
-			}
-
-			iterator operator -- (int)
-			{
-				if (node_ptr == nullptr)
-				{
-					return iterator(lst.tail, lst);
-				}
-
-				node* old_ptr = node_ptr;
-				node_ptr = node_ptr->prev;
-				return iterator(old_ptr, lst);
-			}
-
-			iterator operator + (int offset)
-			{
-				iterator it(node_ptr, lst);
-
-				for (int i = 0; i < offset; i++)
-				{
-					++it;
-				}
-
-				return it;
-			}
-
-			iterator operator - (int offset)
-			{
-				iterator it(node_ptr, lst);
-
-				for (int i = 0; i < offset; i++)
-				{
-					--it;
-				}
-
-				return it;
-			}
-
-			iterator& operator = (const iterator& it)
-			{
-				lst = it.lst;
-				node_ptr = it.node_ptr;
-
-				return *this;
-			}
-
-			T& operator * ()
-			{
-				if (node_ptr == nullptr)
-				{
-					throw std::runtime_error("Current node is empty!");
-				}
-
-				return node_ptr->value;
-			}
-
-			bool operator == (const iterator& it) const
-			{
-				return node_ptr == it.node_ptr;
-			}
-
-			bool operator != (const iterator& it) const
-			{
-				return node_ptr != it.node_ptr;
-			}
-		};
-
-		friend std::ostream& operator << (std::ostream & out, const DoubleList<T> & lst)
-		{
-			for (auto& value : lst)
-			{
-				out << value << " ";
-			}
-
-			return out;
 		}
+
+
+		return size < obj.size;
+	}
+
+	bool operator <= (const DoubleList<T>& obj) const {
+		return *this < obj || *this == obj;
+	}
+
+	bool operator > (const DoubleList<T>& obj) const {
+		return !(*this < obj) && *this != obj;
+	}
+
+	bool operator >= (const DoubleList<T>& obj) const {
+		return *this > obj || *this == obj;
+	}
+
+	class iterator
+	{
+	private:
+		friend class DoubleList<T>;
+
+		DoubleList<T>& lst;
+		node* node_ptr{ nullptr };
+
+		iterator(node* p_node, DoubleList<T>& list_ref) : lst(list_ref), node_ptr(p_node) {}
+
+	public:
+		iterator() = default;
+
+		iterator& operator ++ ()
+		{
+			if (node_ptr == nullptr)
+			{
+				throw std::runtime_error("Current node is empty!");
+			}
+
+			node_ptr = node_ptr->next;
+			return *this;
+		}
+
+		iterator operator ++ (int)
+		{
+			if (node_ptr == nullptr)
+			{
+				throw std::runtime_error("Current node is empty!");
+			}
+
+			node* old_ptr = node_ptr;
+			node_ptr = node_ptr->next;
+			return iterator(old_ptr, lst);
+		}
+
+		iterator& operator -- ()
+		{
+			if (node_ptr == nullptr)
+			{
+				node_ptr = lst.tail;
+				return *this;
+			}
+
+			node_ptr = node_ptr->prev;
+			return *this;
+		}
+
+		iterator operator -- (int)
+		{
+			if (node_ptr == nullptr)
+			{
+				return iterator(lst.tail, lst);
+			}
+
+			node* old_ptr = node_ptr;
+			node_ptr = node_ptr->prev;
+			return iterator(old_ptr, lst);
+		}
+
+		iterator operator + (int offset)
+		{
+			iterator it(node_ptr, lst);
+
+			for (int i = 0; i < offset; i++)
+			{
+				++it;
+			}
+
+			return it;
+		}
+
+		iterator operator - (int offset)
+		{
+			iterator it(node_ptr, lst);
+
+			for (int i = 0; i < offset; i++)
+			{
+				--it;
+			}
+
+			return it;
+		}
+
+		iterator& operator = (const iterator& it)
+		{
+			lst = it.lst;
+			node_ptr = it.node_ptr;
+
+			return *this;
+		}
+
+		T& operator * ()
+		{
+			if (node_ptr == nullptr)
+			{
+				throw std::runtime_error("Current node is empty!");
+			}
+
+			return node_ptr->value;
+		}
+
+		bool operator == (const iterator& it) const
+		{
+			return node_ptr == it.node_ptr;
+		}
+
+		bool operator != (const iterator& it) const
+		{
+			return node_ptr != it.node_ptr;
+		}
+	};
+
+	friend std::ostream& operator << (std::ostream & out, const DoubleList<T> & lst)
+	{
+		for (auto& value : lst)
+		{
+			out << value << " ";
+		}
+
+		return out;
+	}
 };
 
 #endif
