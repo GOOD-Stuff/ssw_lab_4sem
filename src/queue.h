@@ -3,6 +3,7 @@
 
 #include <ostream>
 #include <stdexcept>
+#include <cstring>
 
 template <typename T>
 class queue
