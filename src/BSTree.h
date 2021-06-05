@@ -290,11 +290,8 @@ BSTree<T>& BSTree<T>::operator = (const BSTree<T>& tree)
 	if (this == &tree)
 		return *this;
 
-	WPBranches branches;
-	convert2wvector(tree.root, branches);
-
-	for (auto& element : branches)
-		push(element.lock()->data);
+	root = make_tree(tree.root);
+	size = tree.size;
 
 	return *this;
 }
