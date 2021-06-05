@@ -9,12 +9,14 @@
 
 #include <memory>
 #include <vector>
+#include <list>
 
 using std::weak_ptr;
 using std::shared_ptr;
 using std::vector;
+using std::list;
 
-template<typename T>
+template <typename T>
 class BSTree
 {
 private:
@@ -88,6 +90,9 @@ public:
 
 	Iterator begin() const;
 	Iterator end() const;
+
+	BSTree<T> merge(const BSTree<T>& tree) const;
+	list<T> convert_to_list() const;
 	
 	class Iterator
 	{
@@ -254,6 +259,28 @@ typename BSTree<T>::Iterator BSTree<T>::end() const
 	WPBranches branches;
 	convert2wvector(root, branches);
 	return Iterator(std::move(branches), false);
+}
+
+template <typename T>
+BSTree<T> BSTree<T>::merge(const BSTree<T>& tree) const
+{
+	BSTree<T> new_tree = *this;
+
+	for (auto element : tree)
+		new_tree.push(element);
+
+	return new_tree;
+}
+
+template <typename T>
+list<T> BSTree<T>::convert_to_list() const
+{
+	list<T> lst;
+
+	for (auto& element : *this)
+		lst.push_back(element);
+	
+	return lst;
 }
 
 template <typename T>
