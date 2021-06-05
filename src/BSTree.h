@@ -15,6 +15,7 @@ using std::weak_ptr;
 using std::shared_ptr;
 using std::vector;
 using std::list;
+using std::cout;
 
 template <typename T>
 class BSTree
